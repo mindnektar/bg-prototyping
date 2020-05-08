@@ -1,0 +1,49 @@
+.rev9-resource
+    align-items: center
+    border: 2mm solid rgba(white, .3)
+    border-radius: 100%
+    box-sizing: border-box
+    display: inline-flex
+    height: 12mm
+    justify-content: center
+    position: relative
+    width: 12mm
+
+    &--level-2
+        border-color: rgba(white, .55)
+
+        .rev9-resource__level
+            top: -2.2mm
+
+        .rev9-resource__level-item
+            &:first-child
+                transform: rotate(-24deg)
+
+            &:last-child
+                transform: rotate(24deg)
+
+    &--level-3
+        border-color: rgba(white, .8)
+
+        .rev9-resource__level-item
+            &:first-child
+                transform: translate(.4mm, 1.4mm) rotate(-48deg)
+
+            &:last-child
+                transform: translate(-.4mm, 1.4mm) rotate(48deg)
+
+    &__image
+        width: 30%
+
+    &__level
+        display: flex
+        justify-content: center
+        height: 4mm
+        left: 50%
+        position: absolute
+        top: -2.6mm
+        transform: translateX(-50%)
+        width: 150%
+
+    &__level-item
+        width: 31%

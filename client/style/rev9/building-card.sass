@@ -1,0 +1,119 @@
+.rev9-building-card
+    border: 2mm solid white
+    border-radius: 2mm
+    box-sizing: border-box
+    display: flex
+    flex-direction: column
+    height: 124mm
+    width: 72mm
+
+    .rev9-resource
+        border-width: 1.33mm
+        box-shadow: 0 0 0 1px rgba(black, .2)
+        height: 8mm
+        width: 8mm
+
+    &__skill
+        align-items: center
+        background: rgba(white, .2)
+        border: 1mm solid rgba(black, .2)
+        border-radius: 2mm
+        display: flex
+        flex-basis: 0
+        flex-grow: 1
+        flex-shrink: 0
+        justify-content: center
+        margin: 2mm
+        padding: 1mm 2mm
+        position: relative
+        text-align: center
+
+    &__text
+        line-height: 6.2mm
+
+        .ui-icon
+            display: inline-block
+            height: 8mm
+            width: 8mm
+
+        *
+            vertical-align: middle
+
+    &__condition
+        background-color: rgba(black, .2)
+        border-radius: 0 0 2mm 2mm
+        color: white
+        font-size: 12px
+        left: 50%
+        padding: 0 2mm
+        position: absolute
+        text-align: center
+        text-transform: uppercase
+        top: 0
+        transform: translateX(-50%)
+        white-space: nowrap
+
+    &__middle
+        display: flex
+        flex-shrink: 0
+        height: 32mm
+        margin: 0 2mm
+
+    &__cost
+        display: flex
+        flex-direction: column
+        justify-content: space-around
+        padding: 2mm
+        margin-right: 1mm
+
+    &__neutral
+        align-items: center
+        background: rgba(white, .2)
+        border: 1mm solid rgba(black, .2)
+        border-radius: 2mm
+        display: flex
+        flex-grow: 1
+        flex-shrink: 0
+        justify-content: center
+        margin-left: 1mm
+
+        > *
+            height: 8mm
+            width: 8mm
+            margin: 1mm
+
+    &__production
+        background: rgba(white, .2)
+        border: 1mm solid rgba(black, .2)
+        border-radius: 2mm
+        display: flex
+        flex-basis: 0
+        flex-direction: column
+        flex-grow: 1
+        flex-shrink: 0
+        justify-content: space-around
+        margin: 2mm
+        padding: 1mm 2mm
+
+    &__production-item
+        align-items: center
+        display: flex
+
+    &__production-item-separator
+        background-color: rgba(black, .1)
+        height: .5mm
+
+    &__production-input,
+    &__production-output
+        display: flex
+        flex-basis: 0
+        flex-grow: 1
+        justify-content: center
+
+        > div
+            margin: 0 1mm
+
+    &__production-item-arrow
+        flex-shrink: 0
+        text-align: center
+        width: 4mm
