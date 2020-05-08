@@ -12,7 +12,7 @@ const Group = (props) => (
                     <div
                         className="convertible"
                         data-filename={index}
-                        data-folder={props.label}
+                        data-group={props.label}
                     >
                         {React.createElement(props.component, item)}
                     </div>

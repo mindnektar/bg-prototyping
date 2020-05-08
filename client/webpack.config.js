@@ -53,6 +53,11 @@ module.exports = {
                     { loader: 'import-glob-loader' },
                 ],
             },
+
+            {
+                test: /\.obj$/,
+                use: 'raw-loader',
+            },
         ],
     },
 

@@ -14,36 +14,29 @@ const Sidebar = (props) => {
     const [progress, setProgress] = useState(null);
 
     const convert = async () => {
+        let { groups } = data.find(({ path }) => path === props.location.pathname);
+        groups = groups.filter(({ label }) => !props.filter.includes(label));
         const convertibles = document.querySelectorAll('.convertible');
         let done = 0;
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
 
         setProgress({ image: { done, total: convertibles.length } });
 
         const files = await sequential(Array.from(convertibles).map((convertible) => async () => {
+            const { group, filename } = convertible.dataset;
+            const { textureMapper } = groups.find(({ label }) => label === group);
             const { width, height } = convertible.getBoundingClientRect();
             const image = new Image(width, height);
-            const dataUrl = await htmlToImage.toPng(convertible);
 
-            image.src = dataUrl;
-            canvas.width = width * 4;
-            canvas.height = width * 4;
-
-            const canvasDataUrl = await new Promise((resolve) => {
-                image.onload = () => {
-                    context.fillStyle = '#d4d4d4';
-                    context.fillRect(width * 1.5, 0, width, width * 4);
-                    context.fillRect(width * 0.5, width, width, width);
-                    context.drawImage(image, width * 2.5, width, width, width);
-                    resolve(canvas.toDataURL());
-                };
-            });
+            image.src = await htmlToImage.toPng(convertible);
 
             const file = {
-                dataUrl: canvasDataUrl,
-                filename: convertible.dataset.filename,
-                folder: convertible.dataset.folder,
+                dataUrl: await new Promise((resolve) => {
+                    image.onload = () => {
+                        resolve(textureMapper(document.createElement('canvas'), image, width));
+                    };
+                }),
+                filename,
+                folder: group,
             };
 
             done += 1;
@@ -60,14 +53,13 @@ const Sidebar = (props) => {
         });
 
         const file = await zip.generateAsync({ type: 'blob' });
-        const { groups } = data.find(({ path }) => path === props.location.pathname) || {};
         const formData = new FormData();
 
         formData.append('file', file);
         formData.append('path', props.location.pathname);
-        formData.append('types', JSON.stringify(groups.map(({ label, type }) => ({
+        formData.append('data', JSON.stringify(groups.map(({ label, model }) => ({
             group: label,
-            type,
+            model,
         }))));
 
         await new Promise((resolve) => window.setTimeout(resolve, 500));
