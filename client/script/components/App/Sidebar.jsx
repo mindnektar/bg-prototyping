@@ -38,19 +38,22 @@ const Sidebar = (props) => {
                 Array.from(convertibles).map((convertible) => async () => {
                     const { group, filename } = convertible.dataset;
                     const { textureMapper } = groups.find(({ label }) => label === group);
-                    const { width, height } = convertible.getBoundingClientRect();
-                    const image = new Image(width, height);
+                    const canvas = document.createElement('canvas');
+                    const canvasSize = 1024;
+                    const image = new Image(canvasSize, canvasSize);
 
+                    canvas.width = canvasSize;
+                    canvas.height = canvasSize;
                     image.src = await htmlToImage.toPng(convertible);
 
                     const file = {
                         dataUrl: await new Promise((resolve) => {
                             image.onload = () => {
-                                resolve(textureMapper(
-                                    document.createElement('canvas'),
-                                    image,
-                                    width,
-                                ));
+                                const context = canvas.getContext('2d');
+
+                                textureMapper(context, image, canvasSize);
+
+                                resolve(canvas.toDataURL());
                             };
                         }),
                         filename,

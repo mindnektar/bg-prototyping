@@ -10,7 +10,7 @@ import resourceModel from './rev9/models/resource.obj';
 const drawImageWithRotation = (context, image, x, y, size, degrees) => {
     context.translate(x + (size / 2), y + (size / 2));
     context.rotate((degrees * Math.PI) / 180);
-    context.drawImage(image, -size / 2, -size / 2);
+    context.drawImage(image, -size / 2, -size / 2, size, size);
     context.rotate((-degrees * Math.PI) / 180);
     context.translate(-x + (size / 2), -y + (size / 2));
 };
@@ -18,38 +18,26 @@ const drawImageWithRotation = (context, image, x, y, size, degrees) => {
 export default [
     {
         label: 'Tiles',
-        items: tiles,
+        items: tiles.slice(0, 1),
         component: Tile,
         model: tileModel,
-        textureMapper: (canvas, faceImage, size) => {
-            const context = canvas.getContext('2d');
-
+        textureMapper: (context, faceImage, size) => {
             faceImage.style = 'transform: rotate(180deg)';
-            canvas.width = size * 4;
-            canvas.height = size * 4;
             context.fillStyle = '#d4d4d4';
-            context.fillRect(0, 0, size * 4, size * 4);
-            drawImageWithRotation(context, faceImage, size * 2.5, size, size, 180);
-
-            return canvas.toDataURL();
+            context.fillRect(0, 0, size, size);
+            drawImageWithRotation(context, faceImage, size / 1.6, size / 4, size / 4, 180);
         },
     },
     {
         label: 'Resources',
-        items: resources,
+        items: resources.slice(0, 1),
         component: Resource,
         model: resourceModel,
-        textureMapper: (canvas, faceImage, size) => {
-            const context = canvas.getContext('2d');
-
-            canvas.width = size * 2;
-            canvas.height = size * 2;
+        textureMapper: (context, faceImage, size) => {
             context.fillStyle = '#d4d4d4';
-            context.fillRect(0, 0, size * 2, size * 2);
-            context.drawImage(faceImage, size, size);
-            context.drawImage(faceImage, 0, size);
-
-            return canvas.toDataURL();
+            context.fillRect(0, 0, size, size);
+            context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
+            context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);
         },
     },
     {
