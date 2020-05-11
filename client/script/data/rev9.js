@@ -7,14 +7,6 @@ import tiles from './rev9/tiles';
 import tileModel from './rev9/models/tile.obj';
 import resourceModel from './rev9/models/resource.obj';
 
-const drawImageWithRotation = (context, image, x, y, size, degrees) => {
-    context.translate(x + (size / 2), y + (size / 2));
-    context.rotate((degrees * Math.PI) / 180);
-    context.drawImage(image, -size / 2, -size / 2, size, size);
-    context.rotate((-degrees * Math.PI) / 180);
-    context.translate(-x + (size / 2), -y + (size / 2));
-};
-
 const resourceColors = ['#5a8236', '#898b90', '#a9d283', '#e8df6f'];
 
 export default {
@@ -25,7 +17,7 @@ export default {
             items: tiles.slice(0, 2),
             component: Tile,
             textureMapper: (context, faceImage, size) => {
-                drawImageWithRotation(context, faceImage, size / 1.6, size / 4, size / 4, 180);
+                context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
             },
         },
         {

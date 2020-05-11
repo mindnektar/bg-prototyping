@@ -1,6 +1,6 @@
 const { v4: uuid } = require('uuid');
 
-export default ({ type = 'Custom_Model', mesh, texture, contents, position, scale, color, gridSnapping }) => {
+export default ({ type = 'Custom_Model', mesh, texture, contents, position, scale, color, gridSnapping, cardRows, cardColumns }) => {
     let typeData = {};
 
     switch (type) {
@@ -22,8 +22,8 @@ export default ({ type = 'Custom_Model', mesh, texture, contents, position, scal
                     1: {
                         FaceURL: texture,
                         BackURL: texture,
-                        NumWidth: 3,
-                        NumHeight: 2,
+                        NumWidth: cardRows,
+                        NumHeight: cardColumns,
                         BackIsHidden: true,
                         UniqueBack: false,
                     },

@@ -38,14 +38,11 @@ const Content = (props) => {
     return (
         <div className="content">
             {groups.map((group) => (
-                filter.includes(group.label) ? (
-                    null
-                ) : (
-                    <Group
-                        key={group.label}
-                        {...group}
-                    />
-                )
+                <Group
+                    key={group.label}
+                    filtered={filter.includes(group.label)}
+                    {...group}
+                />
             ))}
         </div>
     );
