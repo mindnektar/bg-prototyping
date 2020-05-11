@@ -14,9 +14,8 @@ import List from './Sidebar/List';
 import ConversionProgress from './Sidebar/ConversionProgress';
 
 const Sidebar = (props) => {
-    const [progress, setProgress] = useState(null);
     const [shouldUpdateTextures, setShouldUpdateTextures] = useLocalStorage('shouldUpdateTextures', true);
-    const [filter] = useLocalStorage('filter', []);
+    const [progress, setProgress] = useState(null);
     const [conversionResult, setConversionResult] = useState(null);
 
     const toggleShouldUpdateTextures = () => {
@@ -24,54 +23,109 @@ const Sidebar = (props) => {
     };
 
     const convert = async () => {
-        let { groups } = data.find(({ path }) => path === props.location.pathname);
-        groups = groups.filter(({ label }) => !filter.includes(label));
+        const { groups, tts, models } = data.find(({ path }) => path === props.location.pathname);
         const formData = new FormData();
 
         if (shouldUpdateTextures) {
-            const convertibles = document.querySelectorAll('.convertible');
+            const allConvertibles = document.querySelectorAll('.convertible');
             let done = 0;
 
-            setProgress({ image: { done, total: convertibles.length } });
+            setProgress({ image: { done, total: allConvertibles.length } });
 
-            const files = await sequential((
-                Array.from(convertibles).map((convertible) => async () => {
-                    const { group, filename } = convertible.dataset;
-                    const { textureMapper } = groups.find(({ label }) => label === group);
-                    const canvas = document.createElement('canvas');
-                    const canvasSize = 1024;
-                    const image = new Image(canvasSize, canvasSize);
+            const customFiles = (await sequential((
+                groups.filter(({ type }) => type === 'custom').map((group) => () => {
+                    const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
 
-                    canvas.width = canvasSize;
-                    canvas.height = canvasSize;
-                    image.src = await htmlToImage.toPng(convertible);
+                    return sequential((
+                        Array.from(convertibles).map((convertible, index) => async () => {
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+                            const canvasSize = 1024;
+                            const image = new Image(canvasSize, canvasSize);
 
-                    const file = {
-                        dataUrl: await new Promise((resolve) => {
-                            image.onload = () => {
-                                const context = canvas.getContext('2d');
+                            canvas.width = canvasSize;
+                            canvas.height = canvasSize;
+                            image.src = await htmlToImage.toPng(convertible);
+                            context.fillStyle = '#d4d4d4';
+                            context.fillRect(0, 0, canvasSize, canvasSize);
 
-                                textureMapper(context, image, canvasSize);
-
-                                resolve(canvas.toDataURL());
+                            const file = {
+                                dataUrl: await new Promise((resolve) => {
+                                    image.onload = () => {
+                                        group.textureMapper(context, image, canvasSize);
+                                        resolve(canvas.toDataURL());
+                                    };
+                                }),
+                                filename: index,
+                                folder: group.label,
                             };
-                        }),
-                        filename,
-                        folder: group,
+
+                            done += 1;
+
+                            setProgress({ image: { done, total: allConvertibles.length } });
+
+                            return file;
+                        })
+                    ));
+                })
+            )));
+
+            const cardFiles = await sequential((
+                groups.filter(({ type }) => type === 'card').map((group) => async () => {
+                    const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    const { width, height } = convertibles[0].getBoundingClientRect();
+
+                    canvas.width = 3 * width;
+                    canvas.height = 2 * height;
+
+                    await sequential((
+                        Array.from(convertibles).map((convertible, index) => async () => {
+                            const image = new Image(width, height);
+
+                            image.src = await htmlToImage.toPng(convertible);
+
+                            await new Promise((resolve) => {
+                                image.onload = () => {
+                                    context.drawImage(
+                                        image,
+                                        width * (index % 3),
+                                        height * Math.floor(index / 3),
+                                        width,
+                                        height,
+                                    );
+                                    resolve();
+                                };
+                            });
+
+                            done += 1;
+
+                            setProgress({ image: { done, total: allConvertibles.length } });
+                        })
+                    ));
+
+                    return {
+                        dataUrl: canvas.toDataURL(),
+                        filename: group.label,
                     };
-
-                    done += 1;
-
-                    setProgress({ image: { done, total: convertibles.length } });
-
-                    return file;
                 })
             ));
+
             const zip = new JSZip();
 
-            files.forEach((file) => {
+            customFiles.forEach((file) => {
                 const [, image] = file.dataUrl.split('base64,');
                 zip.folder(file.folder).file(`${file.filename}.png`, image, { base64: true });
+            });
+
+            cardFiles.forEach((file) => {
+                const [, image] = file.dataUrl.split('base64,');
+                zip.file(`${file.filename}.png`, image, { base64: true });
+            });
+
+            models.forEach((model) => {
+                zip.folder(model.group).file('model.obj', model.content);
             });
 
             const file = await zip.generateAsync({ type: 'blob' });
@@ -82,11 +136,7 @@ const Sidebar = (props) => {
         }
 
         formData.append('path', props.location.pathname);
-        formData.append('data', JSON.stringify(groups.map(({ label, model, items }) => ({
-            group: label,
-            model,
-            itemCount: items.length,
-        }))));
+        formData.append('tts', JSON.stringify(tts));
 
         await new Promise((resolve) => window.setTimeout(resolve, 500));
 

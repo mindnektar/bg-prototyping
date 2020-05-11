@@ -17,7 +17,7 @@ const urlSafe = (url) => (
 
 const mediaUploadHandler = asyncHandler(async (req, res) => {
     const directory = `/proto${req.body.path}/`;
-    const data = JSON.parse(req.body.data);
+    const tts = JSON.parse(req.body.tts);
     const files = [];
 
     if (req.files) {
@@ -47,27 +47,28 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
             return ftp.put(fileData, filePath);
         }));
 
-        await sequential(data.map(({ group, model }) => async () => (
-            ftp.put(Buffer.from(model), `${uploadPrefix}${directory}${group}/model.obj`)
-        )));
-
         await ftp.end();
     }
 
     const now = new Date().getTime();
-    let bagPosition = -8;
 
     const result = ttsFile({
-        filename: req.body.path,
-        objects: data.map(({ group, itemCount }) => {
-            bagPosition += 4;
+        ...tts,
+        objects: tts.objects.map((object) => {
+            if (object.type === 'Deck') {
+                return ttsObject({
+                    ...object,
+                    contents: object.contents.indexes,
+                    texture: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}.png?${now}`,
+                });
+            }
 
             return ttsObject({
-                type: 'Bag',
-                position: bagPosition,
-                children: Array(itemCount).fill(null).map((_, index) => ttsObject({
-                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(group)}/model.obj?${now}`,
-                    texture: `http://denk.alfahosting.org${directory}${urlSafe(group)}/${index}.png?${now}`,
+                ...object,
+                contents: object.contents.indexes.map((index) => ttsObject({
+                    ...object.contents,
+                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}/model.obj?${now}`,
+                    texture: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}/${index}.png?${now}`,
                 })),
             });
         }),

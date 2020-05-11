@@ -11,7 +11,6 @@ const Group = (props) => (
                 <div key={index} className="group__item">
                     <div
                         className="convertible"
-                        data-filename={index}
                         data-group={props.label}
                     >
                         {React.createElement(props.component, item)}
