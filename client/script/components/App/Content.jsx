@@ -2,10 +2,13 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import data from 'data';
+import { useLocalStorage } from '@rehooks/local-storage';
 import Headline from 'atoms/Headline';
 import Group from './Content/Group';
 
 const Content = (props) => {
+    const [filter] = useLocalStorage('filter', []);
+
     const goToProjectHandler = (path) => () => {
         props.history.push(path);
     };
@@ -35,7 +38,7 @@ const Content = (props) => {
     return (
         <div className="content">
             {groups.map((group) => (
-                props.filter.includes(group.label) ? (
+                filter.includes(group.label) ? (
                     null
                 ) : (
                     <Group
@@ -49,7 +52,6 @@ const Content = (props) => {
 };
 
 Content.propTypes = {
-    filter: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
 };

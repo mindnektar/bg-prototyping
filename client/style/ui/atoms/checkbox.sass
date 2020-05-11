@@ -1,0 +1,29 @@
+.ui-checkbox
+    align-items: center
+    cursor: pointer
+    display: flex
+
+    &__label
+        margin-right: 8px
+        white-space: nowrap
+
+    &__input
+        display: none
+
+        &:checked + .ui-checkbox__box
+            background-color: orange
+
+    &__box
+        align-items: center
+        background-color: white
+        border: 2px solid orange
+        border-radius: 5px
+        box-sizing: border-box
+        color: white
+        display: flex
+        flex-shrink: 0
+        height: 22px
+        justify-content: center
+        margin-right: 8px
+        transition: background-color 300ms
+        width: 22px

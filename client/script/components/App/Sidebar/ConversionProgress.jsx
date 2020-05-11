@@ -8,13 +8,6 @@ import Loading from 'atoms/Loading';
 import Button from 'atoms/Button';
 
 const ConversionProgress = (props) => {
-    const selectAll = (event) => {
-        const range = document.createRange();
-        range.selectNode(event.target);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-    };
-
     const renderContent = () => (
         <div className="conversion-progress">
             <div className="conversion-progress__overlay" />
@@ -24,7 +17,7 @@ const ConversionProgress = (props) => {
                     <Headline>1. Converting markup to images</Headline>
 
                     <div className="conversion-progress__content">
-                        {props.progress.uploading || !!props.progress.result ? (
+                        {props.progress.uploading || props.progress.done ? (
                             <div className="conversion-progress__check">&#10004;</div>
                         ) : (
                             <div className="conversion-progress__progress">
@@ -44,13 +37,13 @@ const ConversionProgress = (props) => {
                 <div
                     className={classNames(
                         'conversion-progress__group',
-                        { 'conversion-progress__group--active': props.progress.uploading || !!props.progress.result }
+                        { 'conversion-progress__group--active': props.progress.uploading || props.progress.done }
                     )}
                 >
                     <Headline>2. Uploading to FTP server</Headline>
 
                     <div className="conversion-progress__content">
-                        {props.progress.result ? (
+                        {props.progress.done ? (
                             <div className="conversion-progress__check">&#10004;</div>
                         ) : (
                             <Loading disabled={!props.progress.uploading} />
@@ -61,20 +54,13 @@ const ConversionProgress = (props) => {
                 <div
                     className={classNames(
                         'conversion-progress__group',
-                        { 'conversion-progress__group--active': !!props.progress.result }
+                        { 'conversion-progress__group--active': props.progress.done }
                     )}
                 >
-                    <Headline>Result</Headline>
+                    <Headline>3. Download TTS file</Headline>
 
                     <div className="conversion-progress__content">
-                        <div
-                            className="conversion-progress__result"
-                            onClick={selectAll}
-                        >
-                            {props.progress.result}
-                        </div>
-
-                        <Button onClick={props.close}>OK</Button>
+                        <Button onClick={props.download}>Download</Button>
                     </div>
                 </div>
             </div>
@@ -104,6 +90,7 @@ ConversionProgress.defaultProps = {
 
 ConversionProgress.propTypes = {
     progress: PropTypes.object,
+    download: PropTypes.func.isRequired,
 };
 
 export default ConversionProgress;

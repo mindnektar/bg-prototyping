@@ -1,22 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import scrollToElement from 'animated-scroll-to';
+import { useLocalStorage } from '@rehooks/local-storage';
 import Icon from 'atoms/Icon';
 
 const List = (props) => {
+    const [filter, setFilter] = useLocalStorage('filter', []);
+
     const setFilterHandler = (item) => (event) => {
         event.stopPropagation();
 
-        const filter = [...props.filter];
-        const index = filter.indexOf(item);
+        const newFilter = [...filter];
+        const index = newFilter.indexOf(item);
 
         if (index >= 0) {
-            filter.splice(index, 1);
+            newFilter.splice(index, 1);
         } else {
-            filter.push(item);
+            newFilter.push(item);
         }
 
-        props.setFilter(filter);
+        setFilter(newFilter);
     };
 
     const scrollToHandler = (item) => () => {
@@ -43,7 +46,7 @@ const List = (props) => {
                     {group.label}
 
                     <div onClick={setFilterHandler(group.label)}>
-                        <Icon type={props.filter.includes(group.label) ? 'hidden' : 'visible'} />
+                        <Icon type={filter.includes(group.label) ? 'hidden' : 'visible'} />
                     </div>
                 </div>
             ))}
@@ -52,8 +55,6 @@ const List = (props) => {
 };
 
 List.propTypes = {
-    filter: PropTypes.array.isRequired,
-    setFilter: PropTypes.func.isRequired,
     groups: PropTypes.array.isRequired,
 };
 

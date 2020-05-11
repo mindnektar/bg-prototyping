@@ -1,10 +1,12 @@
-export default ({ objects }) => ({
-    SaveName: 'rev9',
+import moment from 'moment';
+
+export default ({ filename, objects }) => ({
+    SaveName: filename,
     GameMode: 'None',
     Gravity: 0.5,
     PlayArea: 0.5,
-    Date: '5/8/2020 5:08:28 PM',
-    Table: 'Table_Octagon',
+    Date: moment().format('M/D/YYYY h:mm:ss A'),
+    Table: 'Table_Rectangle',
     Sky: 'Sky_Cathedral',
     Note: '',
     Rules: '',

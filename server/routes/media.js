@@ -16,57 +16,59 @@ const urlSafe = (url) => (
 );
 
 const mediaUploadHandler = asyncHandler(async (req, res) => {
-    const zip = await JSZip.loadAsync(req.files.file.data);
-    const ftp = new FtpClient();
-    const uploadPrefix = '/html';
     const directory = `/proto${req.body.path}/`;
     const data = JSON.parse(req.body.data);
     const files = [];
 
-    zip.forEach((_, file) => {
-        files.push(file);
-    });
+    if (req.files) {
+        const zip = await JSZip.loadAsync(req.files.file.data);
+        const ftp = new FtpClient();
+        const uploadPrefix = '/html';
 
-    await ftp.connect({
-        host: 'alfa3007.alfahosting-server.de',
-        user: 'web546',
-        password: 'ED7K5xH0',
-    });
+        zip.forEach((_, file) => {
+            files.push(file);
+        });
 
-    await sequential(files.map((file) => async () => {
-        const filePath = `${uploadPrefix}${directory}${file.name}`;
+        await ftp.connect({
+            host: 'alfa3007.alfahosting-server.de',
+            user: 'web546',
+            password: 'ED7K5xH0',
+        });
 
-        if (file.dir) {
-            return ftp.mkdir(filePath).catch(() => Promise.resolve());
-        }
+        await sequential(files.map((file) => async () => {
+            const filePath = `${uploadPrefix}${directory}${file.name}`;
 
-        const fileData = await file.async('nodebuffer');
+            if (file.dir) {
+                return ftp.mkdir(filePath).catch(() => Promise.resolve());
+            }
 
-        return ftp.put(fileData, filePath);
-    }));
+            const fileData = await file.async('nodebuffer');
 
-    await sequential(data.map(({ group, model }) => async () => (
-        ftp.put(Buffer.from(model), `${uploadPrefix}${directory}${group}/model.obj`)
-    )));
+            return ftp.put(fileData, filePath);
+        }));
 
-    await ftp.end();
+        await sequential(data.map(({ group, model }) => async () => (
+            ftp.put(Buffer.from(model), `${uploadPrefix}${directory}${group}/model.obj`)
+        )));
+
+        await ftp.end();
+    }
 
     const now = new Date().getTime();
     let bagPosition = -8;
 
     const result = ttsFile({
-        objects: data.map(({ group }) => {
+        filename: req.body.path,
+        objects: data.map(({ group, itemCount }) => {
             bagPosition += 4;
 
             return ttsObject({
                 type: 'Bag',
                 position: bagPosition,
-                children: files
-                    .filter((file) => !file.dir && file.name.split('/')[0] === group)
-                    .map((file) => ttsObject({
-                        mesh: `http://denk.alfahosting.org${directory}${group}/model.obj?${now}`,
-                        texture: `http://denk.alfahosting.org${directory}${urlSafe(file.name)}?${now}`,
-                    })),
+                children: Array(itemCount).fill(null).map((_, index) => ttsObject({
+                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(group)}/model.obj?${now}`,
+                    texture: `http://denk.alfahosting.org${directory}${urlSafe(group)}/${index}.png?${now}`,
+                })),
             });
         }),
     });

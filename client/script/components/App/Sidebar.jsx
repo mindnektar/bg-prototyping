@@ -5,61 +5,84 @@ import sequential from 'promise-sequential';
 import htmlToImage from 'html-to-image';
 import JSZip from 'jszip';
 import axios from 'axios';
+import download from 'downloadjs';
+import { useLocalStorage } from '@rehooks/local-storage';
 import data from 'data';
 import Button from 'atoms/Button';
+import Checkbox from 'atoms/Checkbox';
 import List from './Sidebar/List';
 import ConversionProgress from './Sidebar/ConversionProgress';
 
 const Sidebar = (props) => {
     const [progress, setProgress] = useState(null);
+    const [shouldUpdateTextures, setShouldUpdateTextures] = useLocalStorage('shouldUpdateTextures', true);
+    const [filter] = useLocalStorage('filter', []);
+    const [conversionResult, setConversionResult] = useState(null);
+
+    const toggleShouldUpdateTextures = () => {
+        setShouldUpdateTextures(!shouldUpdateTextures);
+    };
 
     const convert = async () => {
         let { groups } = data.find(({ path }) => path === props.location.pathname);
-        groups = groups.filter(({ label }) => !props.filter.includes(label));
-        const convertibles = document.querySelectorAll('.convertible');
-        let done = 0;
+        groups = groups.filter(({ label }) => !filter.includes(label));
+        const formData = new FormData();
 
-        setProgress({ image: { done, total: convertibles.length } });
-
-        const files = await sequential(Array.from(convertibles).map((convertible) => async () => {
-            const { group, filename } = convertible.dataset;
-            const { textureMapper } = groups.find(({ label }) => label === group);
-            const { width, height } = convertible.getBoundingClientRect();
-            const image = new Image(width, height);
-
-            image.src = await htmlToImage.toPng(convertible);
-
-            const file = {
-                dataUrl: await new Promise((resolve) => {
-                    image.onload = () => {
-                        resolve(textureMapper(document.createElement('canvas'), image, width));
-                    };
-                }),
-                filename,
-                folder: group,
-            };
-
-            done += 1;
+        if (shouldUpdateTextures) {
+            const convertibles = document.querySelectorAll('.convertible');
+            let done = 0;
 
             setProgress({ image: { done, total: convertibles.length } });
 
-            return file;
-        }));
-        const zip = new JSZip();
+            const files = await sequential((
+                Array.from(convertibles).map((convertible) => async () => {
+                    const { group, filename } = convertible.dataset;
+                    const { textureMapper } = groups.find(({ label }) => label === group);
+                    const { width, height } = convertible.getBoundingClientRect();
+                    const image = new Image(width, height);
 
-        files.forEach((file) => {
-            const [, image] = file.dataUrl.split('base64,');
-            zip.folder(file.folder).file(`${file.filename}.png`, image, { base64: true });
-        });
+                    image.src = await htmlToImage.toPng(convertible);
 
-        const file = await zip.generateAsync({ type: 'blob' });
-        const formData = new FormData();
+                    const file = {
+                        dataUrl: await new Promise((resolve) => {
+                            image.onload = () => {
+                                resolve(textureMapper(
+                                    document.createElement('canvas'),
+                                    image,
+                                    width,
+                                ));
+                            };
+                        }),
+                        filename,
+                        folder: group,
+                    };
 
-        formData.append('file', file);
+                    done += 1;
+
+                    setProgress({ image: { done, total: convertibles.length } });
+
+                    return file;
+                })
+            ));
+            const zip = new JSZip();
+
+            files.forEach((file) => {
+                const [, image] = file.dataUrl.split('base64,');
+                zip.folder(file.folder).file(`${file.filename}.png`, image, { base64: true });
+            });
+
+            const file = await zip.generateAsync({ type: 'blob' });
+
+            formData.append('file', file);
+        } else {
+            setProgress({ uploading: true });
+        }
+
         formData.append('path', props.location.pathname);
-        formData.append('data', JSON.stringify(groups.map(({ label, model }) => ({
+        formData.append('data', JSON.stringify(groups.map(({ label, model, items }) => ({
             group: label,
             model,
+            itemCount: items.length,
         }))));
 
         await new Promise((resolve) => window.setTimeout(resolve, 500));
@@ -72,10 +95,13 @@ const Sidebar = (props) => {
             },
         });
 
-        setProgress({ result: JSON.stringify(response.data, null, 2) });
+        setConversionResult(JSON.stringify(response.data, null, 2));
+
+        setProgress({ done: true });
     };
 
     const finishConversion = () => {
+        download(conversionResult, 'TS_Save_1000.json', 'text/plain');
         setProgress(null);
     };
 
@@ -90,26 +116,26 @@ const Sidebar = (props) => {
     return (
         <div className="sidebar">
             <Button onClick={convert}>
-                Convert
+                Create TTS file
             </Button>
 
             <ConversionProgress
                 progress={progress}
-                close={finishConversion}
+                download={finishConversion}
             />
 
-            <List
-                groups={groups}
-                filter={props.filter}
-                setFilter={props.setFilter}
+            <Checkbox
+                label="Update textures"
+                checked={shouldUpdateTextures}
+                onChange={toggleShouldUpdateTextures}
             />
+
+            <List groups={groups} />
         </div>
     );
 };
 
 Sidebar.propTypes = {
-    filter: PropTypes.array.isRequired,
-    setFilter: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
 };
 
