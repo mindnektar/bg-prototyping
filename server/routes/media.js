@@ -55,6 +55,14 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
     const result = ttsFile({
         ...tts,
         objects: tts.objects.map((object) => {
+            if (!object.type) {
+                return ttsObject({
+                    ...object,
+                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/model.obj?${now}`,
+                    texture: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/0.png?${now}`,
+                });
+            }
+
             if (object.type === 'Deck') {
                 return ttsObject({
                     ...object,

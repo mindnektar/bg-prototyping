@@ -43,11 +43,11 @@ const generateCustomFiles = (groups, updateProgress) => (
                     const canvas = document.createElement('canvas');
                     const context = canvas.getContext('2d');
                     const canvasSize = 1024;
-                    const image = new Image(canvasSize, canvasSize);
+                    const image = new Image();
 
                     canvas.width = canvasSize;
                     canvas.height = canvasSize;
-                    image.src = await htmlToImage.toPng(convertible);
+                    image.src = await htmlToImage.toSvgDataURL(convertible);
                     context.fillStyle = '#d4d4d4';
                     context.fillRect(0, 0, canvasSize, canvasSize);
                     context.drawImageWithRotation = (imageElem, x, y, size, degrees) => {
@@ -101,7 +101,7 @@ const generateCardFiles = (groups, cardSprites, updateProgress) => (
                 Array.from(convertibles).map((convertible, index) => async () => {
                     const image = new Image(width, height);
 
-                    image.src = await htmlToImage.toPng(convertible);
+                    image.src = await htmlToImage.toSvgDataURL(convertible);
 
                     await new Promise((resolve) => {
                         image.onload = () => {

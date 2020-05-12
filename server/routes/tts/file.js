@@ -26,7 +26,7 @@ export default ({ filename, objects }) => ({
         ThickLines: false,
         Snapping: true,
         Offset: false,
-        BothSnapping: false,
+        BothSnapping: true,
         xSize: 2.01,
         ySize: 2.01,
         PosOffset: {

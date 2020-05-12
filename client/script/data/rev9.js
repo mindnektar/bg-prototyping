@@ -1,9 +1,14 @@
 import BuildingCard from 'components/rev9/BuildingCard';
 import Resource from 'components/rev9/Resource';
 import Tile from 'components/rev9/Tile';
-import buildingCards from './rev9/building-cards';
-import resources from './rev9/resources';
-import tiles from './rev9/tiles';
+import Gold from 'components/rev9/Gold';
+import StartTile from 'components/rev9/StartTile';
+import buildingCards from './rev9/items/building-cards';
+import resources from './rev9/items/resources';
+import tiles from './rev9/items/tiles';
+import gold from './rev9/items/gold';
+import goldModel from './rev9/models/gold.obj';
+import startTileModel from './rev9/models/start-tile.obj';
 import tileModel from './rev9/models/tile.obj';
 import resourceModel from './rev9/models/resource.obj';
 
@@ -12,9 +17,17 @@ const resourceColors = ['#5a8236', '#898b90', '#a9d283', '#e8df6f'];
 export default {
     groups: [
         {
+            label: 'Start tile',
+            type: 'custom',
+            component: StartTile,
+            textureMapper: (context, faceImage, size) => {
+                context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
+            },
+        },
+        {
             label: 'Tiles',
             type: 'custom',
-            items: tiles.slice(0, 2),
+            items: tiles,
             component: Tile,
             textureMapper: (context, faceImage, size) => {
                 context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
@@ -23,8 +36,18 @@ export default {
         {
             label: 'Resources',
             type: 'custom',
-            items: resources.slice(0, 2),
+            items: resources,
             component: Resource,
+            textureMapper: (context, faceImage, size) => {
+                context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
+                context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);
+            },
+        },
+        {
+            label: 'Gold',
+            type: 'custom',
+            items: gold,
+            component: Gold,
             textureMapper: (context, faceImage, size) => {
                 context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
                 context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);
@@ -38,8 +61,10 @@ export default {
         },
     ],
     models: [
+        { group: 'Start tile', content: startTileModel },
         { group: 'Tiles', content: tileModel },
         { group: 'Resources', content: resourceModel },
+        { group: 'Gold', content: goldModel },
     ],
     tts: {
         objects: [
@@ -52,15 +77,26 @@ export default {
                     gridSnapping: true,
                 },
             },
-            ...resources.map((resource, index) => ({
+            ...resources.map((_, index) => ({
                 type: 'Infinite_Bag',
                 position: {
-                    x: (Math.floor(index / 3) * 4) - 6,
+                    x: (Math.floor(index / 3) * 4) - 8,
                     y: (index % 3) * 4,
                 },
                 color: resourceColors[Math.floor(index / 3)],
                 contents: {
                     group: 'Resources',
+                    indexes: [index],
+                },
+            })),
+            ...gold.map((_, index) => ({
+                type: 'Infinite_Bag',
+                position: {
+                    x: 8,
+                    y: ((index % 3) * 4) + 2,
+                },
+                contents: {
+                    group: 'Gold',
                     indexes: [index],
                 },
             })),
@@ -72,6 +108,11 @@ export default {
                     group: 'Building cards',
                     indexes: buildingCards.map((_, index) => index + 100),
                 },
+            },
+            {
+                group: 'Start tile',
+                position: { x: -4, y: -4 },
+                gridSnapping: true,
             },
         ],
     },

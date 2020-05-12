@@ -4,12 +4,15 @@ import PropTypes from 'prop-types';
 const Gold = (props) => (
     <div
         className="rev9-gold"
-        style={props.style}
+        style={{
+            ...props.style,
+            color: props.value === 1 ? '#666666' : '#9e7e20',
+        }}
     >
         <img
             className="rev9-gold__icon"
             alt=""
-            src="/images/rev9/icons/gold.svg"
+            src={`/images/rev9/icons/gold${props.value === 1 ? '-silver' : ''}.svg`}
         />
 
         <div className="rev9-gold__value">{`$${props.value}`}</div>
