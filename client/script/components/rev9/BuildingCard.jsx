@@ -30,6 +30,7 @@ const bonusMap = (bonus) => {
         case 'wood':
         case 'wheat':
         case 'stone':
+        case 'wild':
             return <Resource type={type} level={parseInt(level, 10)} />;
 
         default:

@@ -1,19 +1,19 @@
 .rev9-resource
     align-items: center
-    border: 2mm solid rgba(white, .3)
     border-radius: 100%
-    box-sizing: border-box
     display: inline-flex
     height: 12mm
     justify-content: center
+    overflow: hidden
     position: relative
     width: 12mm
 
     &--level-2
-        border-color: rgba(white, .55)
+        .rev9-resource__border
+            border-color: rgba(white, .55)
 
         .rev9-resource__level
-            top: -2.2mm
+            top: -2%
 
         .rev9-resource__level-item
             &:first-child
@@ -23,7 +23,8 @@
                 transform: rotate(24deg)
 
     &--level-3
-        border-color: rgba(white, .8)
+        .rev9-resource__border
+            border-color: rgba(white, .8)
 
         .rev9-resource__level-item
             &:first-child
@@ -32,8 +33,27 @@
             &:last-child
                 transform: translate(-.4mm, 1.4mm) rotate(48deg)
 
+    &__color
+        border: 6mm solid transparent
+        box-sizing: border-box
+        height: 100%
+        left: 0
+        position: absolute
+        top: 0
+        width: 100%
+
+    &__border
+        border: 2mm solid rgba(white, .3)
+        border-radius: 100%
+        box-sizing: border-box
+        height: 100%
+        left: 0
+        position: absolute
+        top: 0
+        width: 100%
+
     &__image
-        width: 30%
+        width: 20%
 
     &__level
         display: flex
@@ -41,9 +61,9 @@
         height: 4mm
         left: 50%
         position: absolute
-        top: -2.6mm
+        top: -4%
         transform: translateX(-50%)
-        width: 150%
+        width: 100%
 
     &__level-item
         width: 31%

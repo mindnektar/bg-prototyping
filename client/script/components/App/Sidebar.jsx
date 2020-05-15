@@ -20,12 +20,11 @@ const Sidebar = (props) => {
     };
 
     const startConversion = async () => {
-        const { groups, tts, models } = data.find(({ path }) => path === props.location.pathname);
+        const { groups, tts } = data.find(({ path }) => path === props.location.pathname);
 
         const result = await convert({
             groups,
             tts,
-            models,
             shouldUpdateTextures,
             setProgress,
             path: props.location.pathname,

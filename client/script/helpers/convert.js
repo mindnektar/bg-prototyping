@@ -4,7 +4,7 @@ import JSZip from 'jszip';
 import axios from 'axios';
 
 const calculateCardSprites = (groups) => (
-    groups.filter(({ type }) => type === 'card').map((group) => {
+    groups.filter(({ model }) => !model).map((group) => {
         const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
 
         if (convertibles.length === 0) {
@@ -35,52 +35,60 @@ const calculateCardSprites = (groups) => (
 
 const generateCustomFiles = (groups, updateProgress) => (
     sequential((
-        groups.filter(({ type }) => type === 'custom').map((group) => () => {
+        groups.filter(({ model }) => !!model).map((group) => async () => {
             const convertibles = document.querySelectorAll(`.convertible[data-filtered="false"][data-group="${group.label}"]`);
 
-            return sequential((
-                Array.from(convertibles).map((convertible, index) => async () => {
-                    const canvas = document.createElement('canvas');
-                    const context = canvas.getContext('2d');
-                    const canvasSize = 1024;
-                    const image = new Image();
+            return [
+                ...await sequential((
+                    Array.from(convertibles).map((convertible, index) => async () => {
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        const canvasSize = 1024;
+                        const image = new Image();
 
-                    canvas.width = canvasSize;
-                    canvas.height = canvasSize;
-                    image.src = await htmlToImage.toSvgDataURL(convertible);
-                    context.fillStyle = '#d4d4d4';
-                    context.fillRect(0, 0, canvasSize, canvasSize);
-                    context.drawImageWithRotation = (imageElem, x, y, size, degrees) => {
-                        context.translate(x + (size / 2), y + (size / 2));
-                        context.rotate((degrees * Math.PI) / 180);
-                        context.drawImage(imageElem, -size / 2, -size / 2, size, size);
-                        context.rotate((-degrees * Math.PI) / 180);
-                        context.translate(-x + (size / 2), -y + (size / 2));
-                    };
+                        canvas.width = canvasSize;
+                        canvas.height = canvasSize;
+                        image.src = await htmlToImage.toSvgDataURL(convertible);
+                        context.fillStyle = '#d4d4d4';
+                        context.fillRect(0, 0, canvasSize, canvasSize);
+                        context.drawImageWithRotation = (imageElem, x, y, size, degrees) => {
+                            context.translate(x + (size / 2), y + (size / 2));
+                            context.rotate((degrees * Math.PI) / 180);
+                            context.drawImage(imageElem, -size / 2, -size / 2, size, size);
+                            context.rotate((-degrees * Math.PI) / 180);
+                            context.translate(-x + (size / 2), -y + (size / 2));
+                        };
 
-                    const file = {
-                        dataUrl: await new Promise((resolve) => {
-                            image.onload = () => {
-                                group.textureMapper(context, image, canvasSize);
-                                resolve(canvas.toDataURL());
-                            };
-                        }),
-                        filename: index,
-                        folder: group.label,
-                    };
+                        const file = {
+                            type: 'texture',
+                            dataUrl: await new Promise((resolve) => {
+                                image.onload = () => {
+                                    group.model.textureMapper(context, image, canvasSize);
+                                    resolve(canvas.toDataURL());
+                                };
+                            }),
+                            filename: index,
+                            folder: group.label,
+                        };
 
-                    updateProgress();
+                        updateProgress();
 
-                    return file;
-                })
-            ));
+                        return file;
+                    })
+                )),
+                {
+                    type: 'model',
+                    content: group.model.obj,
+                    folder: group.label,
+                },
+            ];
         })
     ))
 );
 
 const generateCardFiles = (groups, cardSprites, updateProgress) => (
     sequential((
-        groups.filter(({ type }) => type === 'card').map((group) => async () => {
+        groups.filter(({ model }) => !model).map((group) => async () => {
             const convertibles = document.querySelectorAll(`.convertible[data-filtered="false"][data-group="${group.label}"]`);
 
             if (convertibles.length === 0) {
@@ -94,12 +102,12 @@ const generateCardFiles = (groups, cardSprites, updateProgress) => (
                 sprite.group === group.label
             ));
 
-            canvas.width = rows * width;
-            canvas.height = columns * height;
+            canvas.width = rows * width * 2;
+            canvas.height = columns * height * 2;
 
             await sequential((
                 Array.from(convertibles).map((convertible, index) => async () => {
-                    const image = new Image(width, height);
+                    const image = new Image(width * 2, height * 2);
 
                     image.src = await htmlToImage.toSvgDataURL(convertible);
 
@@ -107,10 +115,10 @@ const generateCardFiles = (groups, cardSprites, updateProgress) => (
                         image.onload = () => {
                             context.drawImage(
                                 image,
-                                width * (index % rows),
-                                height * Math.floor(index / rows),
-                                width,
-                                height,
+                                width * 2 * (index % rows),
+                                height * 2 * Math.floor(index / rows),
+                                width * 2,
+                                height * 2,
                             );
                             resolve();
                         };
@@ -128,12 +136,16 @@ const generateCardFiles = (groups, cardSprites, updateProgress) => (
     ))
 );
 
-const generateZipFile = (customFiles, cardFiles, models) => {
+const generateZipFile = (customFiles, cardFiles) => {
     const zip = new JSZip();
 
     customFiles.forEach((file) => {
-        const [, image] = file.dataUrl.split('base64,');
-        zip.folder(file.folder).file(`${file.filename}.png`, image, { base64: true });
+        if (file.type === 'texture') {
+            const [, image] = file.dataUrl.split('base64,');
+            zip.folder(file.folder).file(`${file.filename}.png`, image, { base64: true });
+        } else {
+            zip.folder(file.folder).file('model.obj', file.content);
+        }
     });
 
     cardFiles.forEach((file) => {
@@ -141,14 +153,10 @@ const generateZipFile = (customFiles, cardFiles, models) => {
         zip.file(`${file.filename}.png`, image, { base64: true });
     });
 
-    models.forEach((model) => {
-        zip.folder(model.group).file('model.obj', model.content);
-    });
-
     return zip.generateAsync({ type: 'blob' });
 };
 
-export default async ({ groups, tts, models, shouldUpdateTextures, setProgress, path }) => {
+export default async ({ groups, tts, shouldUpdateTextures, setProgress, path }) => {
     const formData = new FormData();
 
     const cardSprites = calculateCardSprites(groups);
@@ -169,7 +177,7 @@ export default async ({ groups, tts, models, shouldUpdateTextures, setProgress, 
             setProgress({ image: { done, total: allConvertibles.length } });
         });
 
-        const file = await generateZipFile(customFiles, cardFiles, models);
+        const file = await generateZipFile(customFiles, cardFiles);
 
         formData.append('file', file);
     } else {

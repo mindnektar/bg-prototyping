@@ -3,12 +3,15 @@ import Resource from 'components/rev9/Resource';
 import Tile from 'components/rev9/Tile';
 import Gold from 'components/rev9/Gold';
 import StartTile from 'components/rev9/StartTile';
+import PlayerBoard from 'components/rev9/PlayerBoard';
 import buildingCards from './rev9/items/building-cards';
 import resources from './rev9/items/resources';
 import tiles from './rev9/items/tiles';
 import gold from './rev9/items/gold';
+import playerBoards from './rev9/items/player-boards';
 import goldModel from './rev9/models/gold.obj';
 import startTileModel from './rev9/models/start-tile.obj';
+import playerBoardModel from './rev9/models/player-board.obj';
 import tileModel from './rev9/models/tile.obj';
 import resourceModel from './rev9/models/resource.obj';
 
@@ -17,54 +20,66 @@ const resourceColors = ['#5a8236', '#898b90', '#a9d283', '#e8df6f'];
 export default {
     groups: [
         {
+            label: 'Player boards',
+            items: playerBoards,
+            component: PlayerBoard,
+            model: {
+                obj: playerBoardModel,
+                textureMapper: (context, faceImage, size) => {
+                    context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
+                },
+            },
+        },
+        {
             label: 'Start tile',
-            type: 'custom',
             component: StartTile,
-            textureMapper: (context, faceImage, size) => {
-                context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
+            model: {
+                obj: startTileModel,
+                textureMapper: (context, faceImage, size) => {
+                    context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
+                },
             },
         },
         {
             label: 'Tiles',
-            type: 'custom',
             items: tiles,
             component: Tile,
-            textureMapper: (context, faceImage, size) => {
-                context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
+            model: {
+                obj: tileModel,
+                textureMapper: (context, faceImage, size) => {
+                    context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
+                },
             },
         },
         {
             label: 'Resources',
-            type: 'custom',
             items: resources,
             component: Resource,
-            textureMapper: (context, faceImage, size) => {
-                context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
-                context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);
+            model: {
+                obj: resourceModel,
+                textureMapper: (context, faceImage, size) => {
+                    context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
+                    context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);
+                },
             },
         },
         {
             label: 'Gold',
-            type: 'custom',
             items: gold,
             component: Gold,
-            textureMapper: (context, faceImage, size) => {
-                context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
-                context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);
+            model: {
+                obj: goldModel,
+                textureMapper: (context, faceImage, size) => {
+                    context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
+                    context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);
+                },
             },
         },
         {
             label: 'Building cards',
-            type: 'card',
             items: buildingCards,
             component: BuildingCard,
         },
-    ],
-    models: [
-        { group: 'Start tile', content: startTileModel },
-        { group: 'Tiles', content: tileModel },
-        { group: 'Resources', content: resourceModel },
-        { group: 'Gold', content: goldModel },
     ],
     tts: {
         objects: [
