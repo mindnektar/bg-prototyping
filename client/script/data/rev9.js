@@ -1,17 +1,21 @@
+import faceCoordinates from 'helpers/faceCoordinates';
 import BuildingCard from 'components/rev9/BuildingCard';
 import Resource from 'components/rev9/Resource';
 import Tile from 'components/rev9/Tile';
 import Gold from 'components/rev9/Gold';
 import StartTile from 'components/rev9/StartTile';
 import PlayerBoard from 'components/rev9/PlayerBoard';
+import PlayerBoardCover from 'components/rev9/PlayerBoardCover';
 import buildingCards from './rev9/items/building-cards';
 import resources from './rev9/items/resources';
 import tiles from './rev9/items/tiles';
 import gold from './rev9/items/gold';
 import playerBoards from './rev9/items/player-boards';
+import playerBoardCovers from './rev9/items/player-board-covers';
 import goldModel from './rev9/models/gold.obj';
 import startTileModel from './rev9/models/start-tile.obj';
 import playerBoardModel from './rev9/models/player-board.obj';
+import playerBoardCoverModel from './rev9/models/player-board-cover.obj';
 import tileModel from './rev9/models/tile.obj';
 import resourceModel from './rev9/models/resource.obj';
 
@@ -25,8 +29,27 @@ export default {
             component: PlayerBoard,
             model: {
                 obj: playerBoardModel,
+                textureSize: 4096,
                 textureMapper: (context, faceImage, size) => {
-                    context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
+                    context.drawImage(
+                        faceImage,
+                        ...faceCoordinates(playerBoardModel, 14, size),
+                    );
+                },
+            },
+        },
+        {
+            label: 'Player board covers',
+            items: playerBoardCovers,
+            component: PlayerBoardCover,
+            model: {
+                obj: playerBoardCoverModel,
+                textureSize: 1024,
+                textureMapper: (context, faceImage, size) => {
+                    context.drawImage(
+                        faceImage,
+                        ...faceCoordinates(playerBoardCoverModel, 0, size),
+                    );
                 },
             },
         },
@@ -35,6 +58,7 @@ export default {
             component: StartTile,
             model: {
                 obj: startTileModel,
+                textureSize: 1024,
                 textureMapper: (context, faceImage, size) => {
                     context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
                 },
@@ -46,6 +70,7 @@ export default {
             component: Tile,
             model: {
                 obj: tileModel,
+                textureSize: 1024,
                 textureMapper: (context, faceImage, size) => {
                     context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
                 },
@@ -57,6 +82,7 @@ export default {
             component: Resource,
             model: {
                 obj: resourceModel,
+                textureSize: 1024,
                 textureMapper: (context, faceImage, size) => {
                     context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
                     context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);
@@ -69,6 +95,7 @@ export default {
             component: Gold,
             model: {
                 obj: goldModel,
+                textureSize: 1024,
                 textureMapper: (context, faceImage, size) => {
                     context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
                     context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);

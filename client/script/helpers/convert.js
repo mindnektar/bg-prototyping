@@ -43,7 +43,7 @@ const generateCustomFiles = (groups, updateProgress) => (
                     Array.from(convertibles).map((convertible, index) => async () => {
                         const canvas = document.createElement('canvas');
                         const context = canvas.getContext('2d');
-                        const canvasSize = 1024;
+                        const canvasSize = group.model.textureSize;
                         const image = new Image();
 
                         canvas.width = canvasSize;

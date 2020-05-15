@@ -12,14 +12,32 @@
         height: 8mm
         width: 8mm
 
-        .rev9-resource__color
+        &__color
             border-width: 4mm
 
-        .rev9-resource__border
+        &__border
             border-width: 1.33mm
 
-        .rev9-resource__level
+        &__level
             top: -13%
+
+        &__level-item
+            width: 35%
+
+        &--level-2
+            .rev9-resource__level
+                top: -1mm
+
+        &--level-3
+            .rev9-resource__border
+                border-color: rgba(white, .8)
+
+            .rev9-resource__level-item
+                &:first-child
+                    transform: translate(.2mm, 1mm) rotate(-48deg)
+
+                &:last-child
+                    transform: translate(-.2mm, 1mm) rotate(48deg)
 
     &__skill
         align-items: center
