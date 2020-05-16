@@ -1,4 +1,3 @@
-import faceCoordinates from 'helpers/faceCoordinates';
 import BuildingCard from 'components/rev9/BuildingCard';
 import Resource from 'components/rev9/Resource';
 import Tile from 'components/rev9/Tile';
@@ -30,12 +29,9 @@ export default {
             model: {
                 obj: playerBoardModel,
                 textureSize: 4096,
-                textureMapper: (context, faceImage, size) => {
-                    context.drawImage(
-                        faceImage,
-                        ...faceCoordinates(playerBoardModel, 14, size),
-                    );
-                },
+                textureMap: [
+                    [0.439, 0.439, 0.614, 0],
+                ],
             },
         },
         {
@@ -45,12 +41,9 @@ export default {
             model: {
                 obj: playerBoardCoverModel,
                 textureSize: 1024,
-                textureMapper: (context, faceImage, size) => {
-                    context.drawImage(
-                        faceImage,
-                        ...faceCoordinates(playerBoardCoverModel, 0, size),
-                    );
-                },
+                textureMap: [
+                    [0.481, 0.667, 0.963, 0],
+                ],
             },
         },
         {
@@ -59,9 +52,9 @@ export default {
             model: {
                 obj: startTileModel,
                 textureSize: 1024,
-                textureMapper: (context, faceImage, size) => {
-                    context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
-                },
+                textureMap: [
+                    [0, 1, 0.5, 0.5],
+                ],
             },
         },
         {
@@ -71,9 +64,9 @@ export default {
             model: {
                 obj: tileModel,
                 textureSize: 1024,
-                textureMapper: (context, faceImage, size) => {
-                    context.drawImageWithRotation(faceImage, size / 1.6, size / 4, size / 4, 180);
-                },
+                textureMap: [
+                    [0, 1, 0.5, 0.5],
+                ],
             },
         },
         {
@@ -83,10 +76,10 @@ export default {
             model: {
                 obj: resourceModel,
                 textureSize: 1024,
-                textureMapper: (context, faceImage, size) => {
-                    context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
-                    context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);
-                },
+                textureMap: [
+                    [0, 1, 0.5, 0.5, (360 / 32) * 30.5],
+                    [0, 0.5, 0.5, 0, (360 / 32) * 22.5],
+                ],
             },
         },
         {
@@ -96,10 +89,10 @@ export default {
             model: {
                 obj: goldModel,
                 textureSize: 1024,
-                textureMapper: (context, faceImage, size) => {
-                    context.drawImage(faceImage, size / 2, size / 2, size / 2, size / 2);
-                    context.drawImage(faceImage, 0, size / 2, size / 2, size / 2);
-                },
+                textureMap: [
+                    [0, 1, 0.5, 0.5, (360 / 32) * 26.5],
+                    [0, 0.5, 0.5, 0, (360 / 32) * 17.5],
+                ],
             },
         },
         {

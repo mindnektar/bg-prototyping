@@ -33,6 +33,14 @@ const calculateCardSprites = (groups) => (
     })
 );
 
+const drawImageWithRotation = (context, imageElem, x, y, width, height, degrees) => {
+    context.translate(x + (width / 2), y + (height / 2));
+    context.rotate((degrees * Math.PI) / 180);
+    context.drawImage(imageElem, -width / 2, -height / 2, width, height);
+    context.rotate((-degrees * Math.PI) / 180);
+    context.translate(-x - (width / 2), -y - (height / 2));
+};
+
 const generateCustomFiles = (groups, updateProgress) => (
     sequential((
         groups.filter(({ model }) => !!model).map((group) => async () => {
@@ -41,29 +49,33 @@ const generateCustomFiles = (groups, updateProgress) => (
             return [
                 ...await sequential((
                     Array.from(convertibles).map((convertible, index) => async () => {
+                        const { textureSize, textureMap } = group.model;
                         const canvas = document.createElement('canvas');
                         const context = canvas.getContext('2d');
-                        const canvasSize = group.model.textureSize;
                         const image = new Image();
 
-                        canvas.width = canvasSize;
-                        canvas.height = canvasSize;
+                        canvas.width = textureSize;
+                        canvas.height = textureSize;
                         image.src = await htmlToImage.toSvgDataURL(convertible);
                         context.fillStyle = '#d4d4d4';
-                        context.fillRect(0, 0, canvasSize, canvasSize);
-                        context.drawImageWithRotation = (imageElem, x, y, size, degrees) => {
-                            context.translate(x + (size / 2), y + (size / 2));
-                            context.rotate((degrees * Math.PI) / 180);
-                            context.drawImage(imageElem, -size / 2, -size / 2, size, size);
-                            context.rotate((-degrees * Math.PI) / 180);
-                            context.translate(-x + (size / 2), -y + (size / 2));
-                        };
+                        context.fillRect(0, 0, textureSize, textureSize);
 
                         const file = {
                             type: 'texture',
                             dataUrl: await new Promise((resolve) => {
                                 image.onload = () => {
-                                    group.model.textureMapper(context, image, canvasSize);
+                                    textureMap.forEach(([x1, y1, x2, y2, rotation]) => {
+                                        drawImageWithRotation(
+                                            context,
+                                            image,
+                                            x1 * textureSize,
+                                            (1 - y1) * textureSize,
+                                            (x2 - x1) * textureSize,
+                                            (y1 - y2) * textureSize,
+                                            rotation,
+                                        );
+                                    });
+
                                     resolve(canvas.toDataURL());
                                 };
                             }),
