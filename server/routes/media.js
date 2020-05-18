@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import asyncHandler from 'express-async-handler';
@@ -43,6 +45,11 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
             }
 
             const fileData = await file.async('nodebuffer');
+
+            if (!file.name.includes('model.obj')) {
+                await fs.promises.mkdir(path.dirname(path.join(__dirname, `../../client/public/images/${req.body.path}/textures/${file.name}`)), { recursive: true });
+                await fs.promises.writeFile(path.join(__dirname, `../../client/public/images/${req.body.path}/textures/${file.name}`), fileData);
+            }
 
             return ftp.put(fileData, filePath);
         }));
