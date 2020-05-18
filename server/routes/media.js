@@ -59,7 +59,7 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
                 return ttsObject({
                     ...object,
                     mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/model.obj?${now}`,
-                    texture: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/0.png?${now}`,
+                    texture: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.index || 0}.png?${now}`,
                 });
             }
 

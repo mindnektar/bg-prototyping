@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import Convertible from 'Convertible';
 import Headline from 'atoms/Headline';
 
 const Group = (props) => (
@@ -17,24 +18,22 @@ const Group = (props) => (
             {props.items ? (
                 props.items.map((item, index) => (
                     <div key={index} className="group__item">
-                        <div
-                            className="convertible"
-                            data-group={props.label}
-                            data-filtered={props.filtered}
+                        <Convertible
+                            group={props.label}
+                            filtered={props.filtered}
                         >
                             {React.createElement(props.component, item)}
-                        </div>
+                        </Convertible>
                     </div>
                 ))
             ) : (
                 <div className="group__item">
-                    <div
-                        className="convertible"
-                        data-group={props.label}
-                        data-filtered={props.filtered}
+                    <Convertible
+                        group={props.label}
+                        filtered={props.filtered}
                     >
                         {React.createElement(props.component)}
-                    </div>
+                    </Convertible>
                 </div>
             )}
         </div>

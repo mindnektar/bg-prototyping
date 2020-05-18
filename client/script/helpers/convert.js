@@ -52,33 +52,41 @@ const generateCustomFiles = (groups, updateProgress) => (
                         const { textureSize, textureMap } = group.model;
                         const canvas = document.createElement('canvas');
                         const context = canvas.getContext('2d');
-                        const image = new Image();
+                        const faces = Array.from(convertible.querySelectorAll('.face'));
+                        const images = await Promise.all((
+                            (faces.length > 0 ? faces : [convertible]).map(async (face) => {
+                                const image = new Image();
+
+                                image.src = await htmlToImage.toSvgDataURL(face);
+
+                                return new Promise((resolve) => {
+                                    image.onload = () => {
+                                        resolve(image);
+                                    };
+                                });
+                            })
+                        ));
 
                         canvas.width = textureSize;
                         canvas.height = textureSize;
-                        image.src = await htmlToImage.toSvgDataURL(convertible);
                         context.fillStyle = '#d4d4d4';
                         context.fillRect(0, 0, textureSize, textureSize);
 
+                        textureMap.forEach(([imageIndex, x1, y1, x2, y2, rotation]) => {
+                            drawImageWithRotation(
+                                context,
+                                images[imageIndex],
+                                x1 * textureSize,
+                                (1 - y1) * textureSize,
+                                (x2 - x1) * textureSize,
+                                (y1 - y2) * textureSize,
+                                rotation,
+                            );
+                        });
+
                         const file = {
                             type: 'texture',
-                            dataUrl: await new Promise((resolve) => {
-                                image.onload = () => {
-                                    textureMap.forEach(([x1, y1, x2, y2, rotation]) => {
-                                        drawImageWithRotation(
-                                            context,
-                                            image,
-                                            x1 * textureSize,
-                                            (1 - y1) * textureSize,
-                                            (x2 - x1) * textureSize,
-                                            (y1 - y2) * textureSize,
-                                            rotation,
-                                        );
-                                    });
-
-                                    resolve(canvas.toDataURL());
-                                };
-                            }),
+                            dataUrl: canvas.toDataURL(),
                             filename: index,
                             folder: group.label,
                         };

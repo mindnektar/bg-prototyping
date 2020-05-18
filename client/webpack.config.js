@@ -18,6 +18,7 @@ module.exports = {
         extensions: ['.js', '.jsx', '.json'],
         modules: [
             'script',
+            'script/components/common',
             'script/components/ui',
             'script/components/hoc',
             'node_modules',

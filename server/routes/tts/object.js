@@ -1,6 +1,6 @@
 const { v4: uuid } = require('uuid');
 
-export default ({ type = 'Custom_Model', mesh, texture, contents, position, scale, color, gridSnapping, cardRows, cardColumns }) => {
+export default ({ type = 'Custom_Model', mesh, texture, contents, position, scale, color, gridSnapping, locked, cardRows, cardColumns, preciseCollision }) => {
     let typeData = {};
 
     switch (type) {
@@ -31,14 +31,14 @@ export default ({ type = 'Custom_Model', mesh, texture, contents, position, scal
             };
             break;
 
-        default:
+        default: {
             typeData = {
                 CustomMesh: {
                     MeshURL: mesh,
                     DiffuseURL: texture,
                     NormalURL: '',
-                    ColliderURL: '',
-                    Convex: true,
+                    ColliderURL: preciseCollision ? mesh : '',
+                    Convex: !preciseCollision,
                     MaterialIndex: 3,
                     TypeIndex: 0,
                     CustomShader: {
@@ -54,9 +54,10 @@ export default ({ type = 'Custom_Model', mesh, texture, contents, position, scal
                     CastShadows: true,
                 },
             };
+        }
     }
 
-    const positionValues = { posX: 0, posY: 0, posZ: 0 };
+    const positionValues = { posX: 0, posY: 1, posZ: 0 };
 
     if (position) {
         if (position.x) {
@@ -64,7 +65,11 @@ export default ({ type = 'Custom_Model', mesh, texture, contents, position, scal
         }
 
         if (position.y) {
-            positionValues.posZ = position.y;
+            positionValues.posY = position.y;
+        }
+
+        if (position.z) {
+            positionValues.posZ = position.z;
         }
     }
 
@@ -96,7 +101,7 @@ export default ({ type = 'Custom_Model', mesh, texture, contents, position, scal
         Description: '',
         GMNotes: '',
         ColorDiffuse: colorDiffuse,
-        Locked: false,
+        Locked: locked || false,
         Grid: gridSnapping || false,
         Snap: true,
         IgnoreFoW: false,

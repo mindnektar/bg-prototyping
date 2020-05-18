@@ -30,7 +30,15 @@ export default {
                 obj: playerBoardModel,
                 textureSize: 4096,
                 textureMap: [
-                    [0.439, 0.439, 0.614, 0],
+                    [0, 0.439, 0.439, 0.614, 0],
+                    [1, 0.614, 0.439, 0.79, 0],
+                    [2, 0.745, 0.877, 0.767, 0.439],
+                    [1, 0.79, 0.877, 0.965, 0.439],
+                    [2, 0.767, 0.877, 0.79, 0.439],
+                    [1, 0.79, 0.439, 0.965, 0],
+                    [2, 0.723, 0.877, 0.745, 0.439],
+                    [1, 0.439, 0.877, 0.614, 0.439],
+                    [2, 0.702, 0.877, 0.723, 0.439],
                 ],
             },
         },
@@ -42,7 +50,7 @@ export default {
                 obj: playerBoardCoverModel,
                 textureSize: 1024,
                 textureMap: [
-                    [0.481, 0.667, 0.963, 0],
+                    [0, 0.481, 0.667, 0.963, 0],
                 ],
             },
         },
@@ -53,7 +61,7 @@ export default {
                 obj: startTileModel,
                 textureSize: 1024,
                 textureMap: [
-                    [0, 1, 0.5, 0.5],
+                    [0, 0, 1, 0.5, 0.5],
                 ],
             },
         },
@@ -65,7 +73,7 @@ export default {
                 obj: tileModel,
                 textureSize: 1024,
                 textureMap: [
-                    [0, 1, 0.5, 0.5],
+                    [0, 0, 1, 0.5, 0.5],
                 ],
             },
         },
@@ -77,8 +85,8 @@ export default {
                 obj: resourceModel,
                 textureSize: 1024,
                 textureMap: [
-                    [0, 1, 0.5, 0.5, (360 / 32) * 30.5],
-                    [0, 0.5, 0.5, 0, (360 / 32) * 22.5],
+                    [0, 0, 1, 0.5, 0.5, (360 / 32) * 30.5],
+                    [0, 0, 0.5, 0.5, 0, (360 / 32) * 22.5],
                 ],
             },
         },
@@ -90,8 +98,8 @@ export default {
                 obj: goldModel,
                 textureSize: 1024,
                 textureMap: [
-                    [0, 1, 0.5, 0.5, (360 / 32) * 26.5],
-                    [0, 0.5, 0.5, 0, (360 / 32) * 17.5],
+                    [0, 0, 1, 0.5, 0.5, (360 / 32) * 26.5],
+                    [0, 0, 0.5, 0.5, 0, (360 / 32) * 17.5],
                 ],
             },
         },
@@ -105,7 +113,7 @@ export default {
         objects: [
             {
                 type: 'Bag',
-                position: { x: 0, y: -4 },
+                position: { x: 0, z: -4 },
                 contents: {
                     group: 'Tiles',
                     indexes: tiles.map((_, index) => index),
@@ -116,7 +124,7 @@ export default {
                 type: 'Infinite_Bag',
                 position: {
                     x: (Math.floor(index / 3) * 4) - 8,
-                    y: (index % 3) * 4,
+                    z: (index % 3) * 4,
                 },
                 color: resourceColors[Math.floor(index / 3)],
                 contents: {
@@ -128,7 +136,7 @@ export default {
                 type: 'Infinite_Bag',
                 position: {
                     x: 8,
-                    y: ((index % 3) * 4) + 2,
+                    z: ((index % 3) * 4) + 2,
                 },
                 contents: {
                     group: 'Gold',
@@ -137,7 +145,7 @@ export default {
             })),
             {
                 type: 'Deck',
-                position: { x: 0, y: -12 },
+                position: { x: 0, z: -12 },
                 scale: 2,
                 contents: {
                     group: 'Building cards',
@@ -146,9 +154,36 @@ export default {
             },
             {
                 group: 'Start tile',
-                position: { x: -4, y: -4 },
+                position: { x: -4, z: -4 },
                 gridSnapping: true,
             },
+            ...playerBoards.map((_, index) => ({
+                group: 'Player boards',
+                index,
+                position: { x: (index * 24) - 36, z: -22 },
+                locked: true,
+                preciseCollision: true,
+            })),
+            ...playerBoardCovers.map((_, index) => ({
+                group: 'Player board covers',
+                index,
+                position: { x: (index * 24) - 41, y: 1.5, z: -22 },
+            })),
+            ...playerBoardCovers.map((_, index) => ({
+                group: 'Player board covers',
+                index,
+                position: { x: (index * 24) - 36.5, y: 1.5, z: -22 },
+            })),
+            ...playerBoardCovers.map((_, index) => ({
+                group: 'Player board covers',
+                index,
+                position: { x: (index * 24) - 32, y: 1.5, z: -22 },
+            })),
+            ...playerBoardCovers.map((_, index) => ({
+                group: 'Player board covers',
+                index,
+                position: { x: (index * 24) - 27.5, y: 1.5, z: -22 },
+            })),
         ],
     },
 };
