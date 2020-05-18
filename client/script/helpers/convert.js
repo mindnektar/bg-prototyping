@@ -1,3 +1,5 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import sequential from 'promise-sequential';
 import htmlToImage from 'html-to-image';
 import JSZip from 'jszip';
@@ -5,17 +7,15 @@ import axios from 'axios';
 
 const calculateCardSprites = (groups) => (
     groups.filter(({ model }) => !model).map((group) => {
-        const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
+        const sizeCheck = document.querySelector('.card-size-check');
 
-        if (convertibles.length === 0) {
-            return [];
-        }
+        ReactDOM.render(React.createElement(group.component, group.items[0]), sizeCheck);
 
-        const { width, height } = convertibles[0].getBoundingClientRect();
+        const { width, height } = sizeCheck.getBoundingClientRect();
         let rows = 1;
         let columns = 1;
 
-        convertibles.forEach((_, index) => {
+        group.items.forEach((_, index) => {
             if (index + 1 > rows * columns) {
                 if (rows * width > columns * height) {
                     columns += 1;
@@ -44,7 +44,7 @@ const drawImageWithRotation = (context, imageElem, x, y, width, height, degrees)
 const generateCustomFiles = (groups, updateProgress) => (
     sequential((
         groups.filter(({ model }) => !!model).map((group) => async () => {
-            const convertibles = document.querySelectorAll(`.convertible[data-filtered="false"][data-group="${group.label}"]`);
+            const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
 
             return [
                 ...await sequential((
@@ -109,7 +109,7 @@ const generateCustomFiles = (groups, updateProgress) => (
 const generateCardFiles = (groups, cardSprites, updateProgress) => (
     sequential((
         groups.filter(({ model }) => !model).map((group) => async () => {
-            const convertibles = document.querySelectorAll(`.convertible[data-filtered="false"][data-group="${group.label}"]`);
+            const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
 
             if (convertibles.length === 0) {
                 return [];
@@ -177,12 +177,14 @@ const generateZipFile = (customFiles, cardFiles) => {
 };
 
 export default async ({ groups, tts, shouldUpdateTextures, setProgress, path }) => {
+    setProgress({ image: { done: 0, total: 0 } });
+
     const formData = new FormData();
 
     const cardSprites = calculateCardSprites(groups);
 
     if (shouldUpdateTextures) {
-        const allConvertibles = document.querySelectorAll('.convertible[data-filtered="false"]');
+        const allConvertibles = document.querySelectorAll('.convertible');
         let done = 0;
 
         setProgress({ image: { done, total: allConvertibles.length } });

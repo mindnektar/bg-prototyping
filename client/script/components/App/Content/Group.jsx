@@ -1,15 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import Convertible from 'Convertible';
 import Headline from 'atoms/Headline';
 
-const Group = (props) => (
+const Group = (props) => !props.filtered && (
     <div
-        className={classNames(
-            'group',
-            { 'group--filtered': props.filtered }
-        )}
+        className="group"
         data-scroll={props.label}
     >
         <Headline>{props.label}</Headline>
@@ -18,20 +14,14 @@ const Group = (props) => (
             {props.items ? (
                 props.items.map((item, index) => (
                     <div key={index} className="group__item">
-                        <Convertible
-                            group={props.label}
-                            filtered={props.filtered}
-                        >
+                        <Convertible group={props.label}>
                             {React.createElement(props.component, item)}
                         </Convertible>
                     </div>
                 ))
             ) : (
                 <div className="group__item">
-                    <Convertible
-                        group={props.label}
-                        filtered={props.filtered}
-                    >
+                    <Convertible group={props.label}>
                         {React.createElement(props.component)}
                     </Convertible>
                 </div>
