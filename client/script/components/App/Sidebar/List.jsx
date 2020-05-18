@@ -29,7 +29,7 @@ const List = (props) => {
                 verticalOffset: -16,
                 cancelOnUserAction: false,
                 horizontal: false,
-                speed: 300,
+                speed: 100,
                 elementToScroll: document.querySelector('.content'),
             }
         );

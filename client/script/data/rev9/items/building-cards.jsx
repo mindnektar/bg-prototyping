@@ -11,7 +11,7 @@ export default [
         skill: {
             text: (
                 <div>
-                    Erhalte <Resource type="fabric" level={1} />, wenn dein <Icon type="wagon" context="rev9" /> sich auf einer Weide befindet.
+                    Erhalte <Resource small type="wild" level={1} />, wenn du eine Weide erkundest.
                 </div>
             ),
             condition: 'Erkundung',
@@ -29,7 +29,7 @@ export default [
         skill: {
             text: (
                 <div>
-                    Zahle <Resource type="wild" /> weniger, wenn du auf einer Weide baust.
+                    Zahle <Resource small type="wild" /> weniger, wenn du auf einer Weide baust.
                 </div>
             ),
             condition: 'Gebäudebau',
@@ -46,7 +46,7 @@ export default [
         skill: {
             text: (
                 <div>
-                    Erhalte <Gold value={3} />, wenn du auf einer Weide baust.
+                    Erhalte <Gold small value={3} />, wenn du auf einer Weide baust.
                 </div>
             ),
             condition: 'Gebäudebau',
@@ -117,7 +117,7 @@ export default [
         skill: {
             text: (
                 <div>
-                    Erhalte <Resource type="wood" level={1} />, wenn dein <Icon type="wagon" context="rev9" /> sich in einem Wald befindet.
+                    Erhalte <Resource small type="wild" level={1} />, wenn du einen Wald erkundest.
                 </div>
             ),
             condition: 'Erkundung',
@@ -135,7 +135,7 @@ export default [
         skill: {
             text: (
                 <div>
-                    Zahle <Resource type="wild" /> weniger, wenn du in einem Wald baust.
+                    Zahle <Resource small type="wild" /> weniger, wenn du in einem Wald baust.
                 </div>
             ),
             condition: 'Gebäudebau',
@@ -152,7 +152,7 @@ export default [
         skill: {
             text: (
                 <div>
-                    Erhalte <Gold value={3} />, wenn du in einem Wald baust.
+                    Erhalte <Gold small value={3} />, wenn du in einem Wald baust.
                 </div>
             ),
             condition: 'Gebäudebau',

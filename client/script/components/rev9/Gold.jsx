@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 const Gold = (props) => (
     <div
-        className="rev9-gold"
+        className={classNames(
+            'rev9-gold',
+            { 'rev9-gold--small': props.small }
+        )}
         style={{
             ...props.style,
             color: props.value === 1 ? '#666666' : '#9e7e20',
@@ -21,11 +25,13 @@ const Gold = (props) => (
 
 Gold.defaultProps = {
     style: null,
+    small: false,
 };
 
 Gold.propTypes = {
     value: PropTypes.number.isRequired,
     style: PropTypes.object,
+    small: PropTypes.bool,
 };
 
 export default Gold;

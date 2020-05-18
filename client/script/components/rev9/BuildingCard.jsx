@@ -13,7 +13,7 @@ const bonusMap = (bonus) => {
 
     switch (type) {
         case 'gold':
-            return <Gold value={parseInt(level, 10)} />;
+            return <Gold small value={parseInt(level, 10)} />;
 
         case 'vp':
             return <VP value={parseInt(level, 10)} />;
@@ -31,7 +31,7 @@ const bonusMap = (bonus) => {
         case 'wheat':
         case 'stone':
         case 'wild':
-            return <Resource type={type} level={parseInt(level, 10)} />;
+            return <Resource small type={type} level={parseInt(level, 10)} />;
 
         default:
             return null;
@@ -63,6 +63,7 @@ const BuildingCard = (props) => (
                         key={inputIndex}
                         type={cost.split('-')[0]}
                         level={parseInt(cost.split('-')[1], 10)}
+                        small
                     />
                 ))}
             </div>

@@ -2,40 +2,32 @@
     align-items: center
     border-radius: 100%
     display: inline-flex
-    height: 16mm
+    height: 80px
     justify-content: center
     overflow: hidden
     position: relative
-    vertical-align: middle
-    width: 16mm
+    width: 80px
+
+    &--small
+        height: 32px
+        width: 32px
+
+        .rev9-resource__color
+            border-width: 16px
+
+        .rev9-resource__border
+            border-width: 4px
 
     &--level-2
         .rev9-resource__border
             border-color: rgba(white, .55)
 
-        .rev9-resource__level
-            top: 0
-
-        .rev9-resource__level-item
-            &:first-child
-                transform: rotate(-24deg)
-
-            &:last-child
-                transform: rotate(24deg)
-
     &--level-3
         .rev9-resource__border
             border-color: rgba(white, .8)
 
-        .rev9-resource__level-item
-            &:first-child
-                transform: translate(.4mm, 1.8mm) rotate(-48deg)
-
-            &:last-child
-                transform: translate(-.4mm, 1.8mm) rotate(48deg)
-
     &__color
-        border: 8mm solid transparent
+        border: 40px solid transparent
         box-sizing: border-box
         height: 100%
         left: 0
@@ -44,7 +36,7 @@
         width: 100%
 
     &__border
-        border: 2.7mm solid rgba(white, .3)
+        border: 12px solid rgba(white, .3)
         border-radius: 100%
         box-sizing: border-box
         height: 100%
@@ -56,15 +48,30 @@
     &__image
         width: 20%
 
-    &__level
-        display: flex
-        justify-content: center
-        height: 4mm
+    &__level-item
+        height: 25%
         left: 50%
         position: absolute
-        top: -3%
-        transform: translateX(-50%)
-        width: 100%
+        top: 50%
+        width: 25%
 
-    &__level-item
-        width: 31%
+        &:nth-child(1)
+            .rev9-resource--level-1 &
+                transform: translate(-50%, -210%)
+
+            .rev9-resource--level-2 &
+                transform: translate(-50%, -50%) rotate(-20deg) translateY(-160%)
+
+            .rev9-resource--level-3 &
+                transform: translate(-50%, -50%) rotate(-40deg) translateY(-160%)
+
+        &:nth-child(2)
+            .rev9-resource--level-2 &
+                transform: translate(-50%, -50%) rotate(20deg) translateY(-160%)
+
+            .rev9-resource--level-3 &
+                transform: translate(-50%, -210%)
+
+        &:nth-child(3)
+            .rev9-resource--level-3 &
+                transform: translate(-50%, -50%) rotate(40deg) translateY(-160%)
