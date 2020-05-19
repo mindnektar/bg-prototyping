@@ -5,7 +5,7 @@ import Resource from './Resource';
 
 const PlayerBoard = (props) => (
     <>
-        <Face>
+        <Face name="wagon">
             <div
                 className="rev9-player-board"
                 style={{ backgroundColor: props.color }}
@@ -20,14 +20,14 @@ const PlayerBoard = (props) => (
             </div>
         </Face>
 
-        <Face>
+        <Face name="inset">
             <div
                 className="rev9-player-board__inset"
                 style={{ backgroundColor: props.color }}
             />
         </Face>
 
-        <Face>
+        <Face name="bridge">
             <div
                 className="rev9-player-board__bridge"
                 style={{ backgroundColor: props.color }}

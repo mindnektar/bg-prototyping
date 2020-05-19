@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 
+const renderer = new THREE.WebGLRenderer({ alpha: true });
+
 const Model = (props) => {
     const [dragging, setDragging] = useState(false);
     const [dragX, setDragX] = useState(0);
@@ -18,21 +20,20 @@ const Model = (props) => {
             0.1,
             1000,
         );
-        const renderer = new THREE.WebGLRenderer({ alpha: true });
         const material = new THREE.MeshLambertMaterial({ color: 0xd4d4d4 });
         const texture = new THREE.TextureLoader().load(props.texture);
         const obj = new OBJLoader().parse(props.obj);
         const box = new THREE.Box3().setFromObject(obj);
         const objWidth = (box.max.z - box.min.z) * 1.5;
         const light = new THREE.PointLight(0xffffff, 1, 100);
-        const light2 = new THREE.PointLight(0xffffff, 1, objWidth * 2.5);
+        const light2 = new THREE.PointLight(0xffffff, 1, 100);
 
         renderer.setSize(sceneRef.current.offsetWidth, sceneRef.current.offsetHeight);
         renderer.setClearColor(0x000000, 0);
         sceneRef.current.appendChild(renderer.domElement);
         camera.position.z = objWidth;
-        light.position.set(0, objWidth, objWidth);
-        light2.position.set(0, objWidth, objWidth);
+        light.position.set(-objWidth, objWidth, objWidth);
+        light2.position.set(objWidth, objWidth, objWidth);
         material.map = texture;
         obj.rotation.x = 0.8;
 

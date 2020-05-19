@@ -57,6 +57,7 @@ const generateCustomFiles = (groups, updateProgress) => (
                             (faces.length > 0 ? faces : [convertible]).map(async (face) => {
                                 const image = new Image();
 
+                                image.dataset.name = face.dataset.name || 'default';
                                 image.src = await htmlToImage.toSvgDataURL(face);
 
                                 return new Promise((resolve) => {
@@ -72,10 +73,10 @@ const generateCustomFiles = (groups, updateProgress) => (
                         context.fillStyle = '#d4d4d4';
                         context.fillRect(0, 0, textureSize, textureSize);
 
-                        textureMap.forEach(([imageIndex, x1, y1, x2, y2, rotation]) => {
+                        textureMap.forEach(([name, x1, y1, x2, y2, rotation]) => {
                             drawImageWithRotation(
                                 context,
-                                images[imageIndex],
+                                images.find(({ dataset }) => dataset.name === name),
                                 x1 * textureSize,
                                 (1 - y1) * textureSize,
                                 (x2 - x1) * textureSize,
