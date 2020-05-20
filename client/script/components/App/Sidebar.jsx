@@ -38,6 +38,10 @@ const Sidebar = (props) => {
         setProgress(null);
     };
 
+    const closeConversion = () => {
+        setProgress(null);
+    };
+
     const { groups } = data.find(({ path }) => path === props.location.pathname) || {};
 
     if (!groups) {
@@ -54,7 +58,8 @@ const Sidebar = (props) => {
 
             <ConversionProgress
                 progress={progress}
-                download={finishConversion}
+                onDownload={finishConversion}
+                onClose={closeConversion}
             />
 
             <Checkbox

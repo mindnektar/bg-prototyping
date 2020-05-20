@@ -6,14 +6,21 @@
         opacity: .2
 
     &__items
-        justify-content: center
+        align-items: center
         display: flex
         flex-wrap: wrap
+        padding: 0 16px
+        overflow-x: auto
 
     &__item
         background: repeating-linear-gradient(-45deg, rgba(black, .05), rgba(black, .05) 16px, white 16px, white 32px)
         border: 1px solid rgba(black, .1)
         border-radius: 8px
         box-shadow: 0 2px 4px 0 rgba(black, .1)
+        cursor: pointer
         margin: 8px
         padding: 16px
+
+    &__item-index
+        margin-top: 4px
+        text-align: center

@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import Headline from 'atoms/Headline';
 import Loading from 'atoms/Loading';
 import Button from 'atoms/Button';
+import Close from 'atoms/Close';
 
 const ConversionProgress = (props) => {
     const renderContent = () => (
@@ -60,10 +61,14 @@ const ConversionProgress = (props) => {
                     <Headline>3. Download TTS file</Headline>
 
                     <div className="conversion-progress__content">
-                        <Button onClick={props.download}>Download</Button>
+                        <Button onClick={props.onDownload}>Download</Button>
                     </div>
                 </div>
             </div>
+
+            {props.progress.done && (
+                <Close onClick={props.onClose} />
+            )}
         </div>
     );
 
@@ -90,7 +95,8 @@ ConversionProgress.defaultProps = {
 
 ConversionProgress.propTypes = {
     progress: PropTypes.object,
-    download: PropTypes.func.isRequired,
+    onDownload: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
 };
 
 export default ConversionProgress;

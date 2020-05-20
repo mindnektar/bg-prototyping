@@ -17,29 +17,18 @@ const Group = (props) => {
         setActiveModel(null);
     };
 
-    const items = () => (
-        props.items ? (
-            props.items.map((item, index) => (
-                <div
-                    key={index}
-                    className="group__item"
-                    onClick={openModelHandler(index)}
-                >
-                    <Convertible group={props.label}>
-                        {React.createElement(props.component, item)}
-                    </Convertible>
-                </div>
-            ))
-        ) : (
-            <div
-                className="group__item"
-                onClick={openModelHandler(0)}
-            >
-                <Convertible group={props.label}>
-                    {React.createElement(props.component)}
-                </Convertible>
-            </div>
-        )
+    const renderItem = (item, index) => (
+        <div
+            key={index}
+            className="group__item"
+            onClick={openModelHandler(index)}
+        >
+            <Convertible group={props.label}>
+                {React.createElement(props.component, item)}
+            </Convertible>
+
+            <div className="group__item-index">#{index + 1}</div>
+        </div>
     );
 
     return !props.filtered && (
@@ -58,7 +47,11 @@ const Group = (props) => {
             )}
 
             <div className="group__items">
-                {items()}
+                {props.items ? (
+                    props.items.map(renderItem)
+                ) : (
+                    renderItem(null, 0)
+                )}
             </div>
         </div>
     );

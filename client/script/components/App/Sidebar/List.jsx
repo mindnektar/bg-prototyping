@@ -23,8 +23,14 @@ const List = (props) => {
     };
 
     const scrollToHandler = (item) => () => {
+        const element = document.querySelector(`[data-scroll="${item}"]`);
+
+        if (!element) {
+            return;
+        }
+
         scrollToElement(
-            document.querySelector(`[data-scroll="${item}"]`),
+            element,
             {
                 verticalOffset: -16,
                 cancelOnUserAction: false,

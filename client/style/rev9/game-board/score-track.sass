@@ -1,0 +1,52 @@
+.rev9-score-track
+    &__item
+        align-items: center
+        background-color: rgba(white, .3)
+        border-radius: 8px
+        color: rgba(black, .2)
+        display: flex
+        font-size: 20px
+        height: 64px
+        justify-content: center
+        margin: 4px
+        position: relative
+        width: 64px
+
+        .ui-icon--vp
+            display: none
+            left: 50%
+            opacity: .3
+            position: absolute
+            top: 60%
+            transform: translate(-50%, -50%)
+            width: 56px
+
+    &__item--highlighted
+        color: rgba(black, .6)
+
+        .ui-icon--vp
+            display: block
+
+    &__top
+        display: flex
+
+    &__center
+        display: flex
+
+    &__left
+        display: flex
+        flex-direction: column-reverse
+
+    &__content
+        align-items: center
+        display: flex
+        flex-direction: column
+        flex-grow: 1
+
+    &__right
+        display: flex
+        flex-direction: column
+
+    &__bottom
+        display: flex
+        flex-direction: row-reverse

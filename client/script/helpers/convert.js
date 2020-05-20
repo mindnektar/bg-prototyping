@@ -34,9 +34,12 @@ const calculateCardSprites = (groups) => (
 );
 
 const drawImageWithRotation = (context, imageElem, x, y, width, height, degrees) => {
+    const imageWidth = degrees % 180 === 90 ? height : width;
+    const imageHeight = degrees % 180 === 90 ? width : height;
+
     context.translate(x + (width / 2), y + (height / 2));
     context.rotate((degrees * Math.PI) / 180);
-    context.drawImage(imageElem, -width / 2, -height / 2, width, height);
+    context.drawImage(imageElem, -imageWidth / 2, -imageHeight / 2, imageWidth, imageHeight);
     context.rotate((-degrees * Math.PI) / 180);
     context.translate(-x - (width / 2), -y - (height / 2));
 };

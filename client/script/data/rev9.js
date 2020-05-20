@@ -5,6 +5,7 @@ import Gold from 'components/rev9/Gold';
 import StartTile from 'components/rev9/StartTile';
 import PlayerBoard from 'components/rev9/PlayerBoard';
 import PlayerBoardCover from 'components/rev9/PlayerBoardCover';
+import GameBoard from 'components/rev9/GameBoard';
 import buildingCards from './rev9/items/building-cards';
 import resources from './rev9/items/resources';
 import tiles from './rev9/items/tiles';
@@ -17,11 +18,25 @@ import playerBoardModel from './rev9/models/player-board.obj';
 import playerBoardCoverModel from './rev9/models/player-board-cover.obj';
 import tileModel from './rev9/models/tile.obj';
 import resourceModel from './rev9/models/resource.obj';
+import gameBoardModel from './rev9/models/game-board.obj';
 
 const resourceColors = ['#5a8236', '#898b90', '#a9d283', '#e8df6f'];
 
 export default {
     groups: [
+        {
+            label: 'Game board',
+            component: GameBoard,
+            model: {
+                obj: gameBoardModel,
+                textureSize: 6144,
+                textureMap: [
+                    ['building-site', 0.521, 0.667, 0.836, 0.333, 90],
+                    ['center', 0.26, 0.565, 0.521, 0, 180],
+                    ['market', 0.521, 1, 0.836, 0.667, 90],
+                ],
+            },
+        },
         {
             label: 'Player boards',
             items: playerBoards,

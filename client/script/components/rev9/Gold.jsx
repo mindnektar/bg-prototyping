@@ -10,13 +10,13 @@ const Gold = (props) => (
         )}
         style={{
             ...props.style,
-            color: props.value === 1 ? '#666666' : '#9e7e20',
+            color: props.silver ? '#666666' : '#9e7e20',
         }}
     >
         <img
             className="rev9-gold__icon"
             alt=""
-            src={`/images/rev9/icons/gold${props.value === 1 ? '-silver' : ''}.svg`}
+            src={`/images/rev9/icons/gold${props.silver ? '-silver' : ''}.svg`}
         />
 
         <div className="rev9-gold__value">{`$${props.value}`}</div>
@@ -26,12 +26,14 @@ const Gold = (props) => (
 Gold.defaultProps = {
     style: null,
     small: false,
+    silver: false,
 };
 
 Gold.propTypes = {
     value: PropTypes.number.isRequired,
     style: PropTypes.object,
     small: PropTypes.bool,
+    silver: PropTypes.bool,
 };
 
 export default Gold;
