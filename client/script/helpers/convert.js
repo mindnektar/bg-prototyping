@@ -6,7 +6,7 @@ import JSZip from 'jszip';
 import axios from 'axios';
 
 const calculateCardSprites = (groups) => (
-    groups.filter(({ model }) => !model).map((group) => {
+    groups.filter(({ model, models }) => !model && !models).map((group) => {
         const sizeCheck = document.querySelector('.card-size-check');
 
         ReactDOM.render(React.createElement(group.component, group.items[0]), sizeCheck);
@@ -46,8 +46,21 @@ const drawImageWithRotation = (context, imageElem, x, y, width, height, degrees)
 
 const generateCustomFiles = (groups, updateProgress) => (
     sequential((
-        groups.filter(({ model }) => !!model).map((group) => async () => {
+        groups.filter(({ model, models }) => !!model || !!models).map((group) => async () => {
             const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
+            const models = group.model
+                ? [{
+                    type: 'model',
+                    content: group.model.obj,
+                    filename: 0,
+                    folder: group.label,
+                }]
+                : group.models.map((obj, index) => ({
+                    type: 'model',
+                    content: obj,
+                    filename: index,
+                    folder: group.label,
+                }));
 
             return [
                 ...await sequential((
@@ -100,11 +113,7 @@ const generateCustomFiles = (groups, updateProgress) => (
                         return file;
                     })
                 )),
-                {
-                    type: 'model',
-                    content: group.model.obj,
-                    folder: group.label,
-                },
+                ...models,
             ];
         })
     ))
@@ -168,7 +177,7 @@ const generateZipFile = (customFiles, cardFiles) => {
             const [, image] = file.dataUrl.split('base64,');
             zip.folder(file.folder).file(`${file.filename}.png`, image, { base64: true });
         } else {
-            zip.folder(file.folder).file('model.obj', file.content);
+            zip.folder(file.folder).file(`${file.filename}.obj`, file.content);
         }
     });
 

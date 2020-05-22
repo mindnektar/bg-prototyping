@@ -46,7 +46,7 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
 
             const fileData = await file.async('nodebuffer');
 
-            if (!file.name.includes('model.obj')) {
+            if (!file.name.includes('.obj')) {
                 await fs.promises.mkdir(path.dirname(path.join(__dirname, `../../client/public/images/${req.body.path}/textures/${file.name}`)), { recursive: true });
                 await fs.promises.writeFile(path.join(__dirname, `../../client/public/images/${req.body.path}/textures/${file.name}`), fileData);
             }
@@ -65,7 +65,7 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
             if (!object.type) {
                 return ttsObject({
                     ...object,
-                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/model.obj?${now}`,
+                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.index || 0}.obj?${now}`,
                     texture: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.index || 0}.png?${now}`,
                 });
             }
@@ -82,7 +82,7 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
                 ...object,
                 contents: object.contents.indexes.map((index) => ttsObject({
                     ...object.contents,
-                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}/model.obj?${now}`,
+                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}/0.obj?${now}`,
                     texture: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}/${index}.png?${now}`,
                 })),
             });

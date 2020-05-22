@@ -18,6 +18,12 @@ import playerBoardModel from './rev9/models/player-board.obj';
 import playerBoardCoverModel from './rev9/models/player-board-cover.obj';
 import tileModel from './rev9/models/tile.obj';
 import resourceModel from './rev9/models/resource.obj';
+import dwellingModel from './rev9/models/dwelling.obj';
+import houseAModel from './rev9/models/house-a.obj';
+import houseBModel from './rev9/models/house-b.obj';
+import houseCModel from './rev9/models/house-c.obj';
+import houseDModel from './rev9/models/house-d.obj';
+import wagonModel from './rev9/models/wagon.obj';
 import gameBoardModel from './rev9/models/game-board.obj';
 
 const resourceColors = ['#5a8236', '#898b90', '#a9d283', '#e8df6f'];
@@ -123,12 +129,24 @@ export default {
             items: buildingCards,
             component: BuildingCard,
         },
+        {
+            label: 'Pieces',
+            models: [dwellingModel, houseAModel, houseBModel, houseCModel, houseDModel, wagonModel],
+        },
     ],
     tts: {
         objects: [
             {
+                group: 'Game board',
+                position: { x: 0, z: 20 },
+                rotation: { y: 180 },
+                locked: true,
+                preciseCollision: true,
+            },
+            {
                 type: 'Bag',
                 position: { x: 0, z: -4 },
+                rotation: { y: 180 },
                 contents: {
                     group: 'Tiles',
                     indexes: tiles.map((_, index) => index),
@@ -141,6 +159,7 @@ export default {
                     x: (Math.floor(index / 3) * 4) - 8,
                     z: (index % 3) * 4,
                 },
+                rotation: { y: 180 },
                 color: resourceColors[Math.floor(index / 3)],
                 contents: {
                     group: 'Resources',
@@ -153,6 +172,7 @@ export default {
                     x: 8,
                     z: ((index % 3) * 4) + 2,
                 },
+                rotation: { y: 180 },
                 contents: {
                     group: 'Gold',
                     indexes: [index],
@@ -161,6 +181,7 @@ export default {
             {
                 type: 'Deck',
                 position: { x: 0, z: -12 },
+                rotation: { y: 180 },
                 scale: 2,
                 contents: {
                     group: 'Building cards',
@@ -176,6 +197,7 @@ export default {
                 group: 'Player boards',
                 index,
                 position: { x: (index * 24) - 36, z: -22 },
+                rotation: { y: 180 },
                 locked: true,
                 preciseCollision: true,
             })),
@@ -183,21 +205,25 @@ export default {
                 group: 'Player board covers',
                 index,
                 position: { x: (index * 24) - 41, y: 1.5, z: -22 },
+                rotation: { y: 180 },
             })),
             ...playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
                 index,
                 position: { x: (index * 24) - 36.5, y: 1.5, z: -22 },
+                rotation: { y: 180 },
             })),
             ...playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
                 index,
                 position: { x: (index * 24) - 32, y: 1.5, z: -22 },
+                rotation: { y: 180 },
             })),
             ...playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
                 index,
                 position: { x: (index * 24) - 27.5, y: 1.5, z: -22 },
+                rotation: { y: 180 },
             })),
         ],
     },

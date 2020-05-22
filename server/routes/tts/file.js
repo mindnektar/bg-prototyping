@@ -36,7 +36,7 @@ export default ({ filename, objects }) => ({
         },
     },
     Lighting: {
-        LightIntensity: 0.54,
+        LightIntensity: 0,
         LightColor: {
             r: 1.0,
             g: 0.9804,

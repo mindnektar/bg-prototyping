@@ -1,6 +1,6 @@
 const { v4: uuid } = require('uuid');
 
-export default ({ type = 'Custom_Model', mesh, texture, contents, position, scale, color, gridSnapping, locked, cardRows, cardColumns, preciseCollision }) => {
+export default ({ type = 'Custom_Model', mesh, texture, contents, position, rotation, scale, color, gridSnapping, locked, cardRows, cardColumns, preciseCollision }) => {
     let typeData = {};
 
     switch (type) {
@@ -73,6 +73,22 @@ export default ({ type = 'Custom_Model', mesh, texture, contents, position, scal
         }
     }
 
+    const rotationValues = { rotX: 0, rotY: 1, rotZ: 0 };
+
+    if (rotation) {
+        if (rotation.x) {
+            rotationValues.rotX = rotation.x;
+        }
+
+        if (rotation.y) {
+            rotationValues.rotY = rotation.y;
+        }
+
+        if (rotation.z) {
+            rotationValues.rotZ = rotation.z;
+        }
+    }
+
     const scaleValues = { scaleX: 1.0, scaleY: 1.0, scaleZ: 1.0 };
 
     if (scale) {
@@ -92,9 +108,7 @@ export default ({ type = 'Custom_Model', mesh, texture, contents, position, scal
         Name: type,
         Transform: {
             ...positionValues,
-            rotX: 359.992218,
-            rotY: 180.016769,
-            rotZ: -0.0005187531,
+            ...rotationValues,
             ...scaleValues,
         },
         Nickname: '',
