@@ -8,6 +8,7 @@ import FtpClient from 'promise-ftp';
 import sequential from 'promise-sequential';
 import ttsFile from './tts/file';
 import ttsObject from './tts/object';
+import ttsDeck from './tts/deck';
 
 const router = express.Router();
 
@@ -65,16 +66,19 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
             if (!object.type) {
                 return ttsObject({
                     ...object,
-                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.index || 0}.obj?${now}`,
-                    texture: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.index || 0}.png?${now}`,
+                    type: 'Custom_Model',
+                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.modelIndex || 0}.obj?${now}`,
+                    texture: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.textureIndex || 0}.png?${now}`,
                 });
             }
 
             if (object.type === 'Deck') {
-                return ttsObject({
+                return ttsDeck({
                     ...object,
-                    contents: object.contents.indexes,
                     texture: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}.png?${now}`,
+                    contents: object.contents.indexes.map((index) => (
+                        parseInt(index, 10) + 100
+                    )),
                 });
             }
 
@@ -82,6 +86,7 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
                 ...object,
                 contents: object.contents.indexes.map((index) => ttsObject({
                     ...object.contents,
+                    type: 'Custom_Model',
                     mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}/0.obj?${now}`,
                     texture: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}/${index}.png?${now}`,
                 })),

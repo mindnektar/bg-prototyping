@@ -9,11 +9,11 @@ const Model = (props) => {
 
     const setUpLighting = (scene, object) => {
         const box = new THREE.Box3().setFromObject(object);
-        const x = box.max.x - box.min.x;
-        const light = new THREE.PointLight(0xd4d4d4, 1, 15 * x);
-        const light2 = new THREE.PointLight(0xd4d4d4, 1, 15 * x);
-        const light3 = new THREE.PointLight(0xd4d4d4, 1, 15 * x);
-        const light4 = new THREE.PointLight(0xd4d4d4, 1, 15 * x);
+        const x = (box.max.x - box.min.x) * 3;
+        const light = new THREE.PointLight(0xffffff, 1, 30 * x);
+        const light2 = new THREE.PointLight(0xffffff, 1, 30 * x);
+        const light3 = new THREE.PointLight(0xffffff, 1, 30 * x);
+        const light4 = new THREE.PointLight(0xffffff, 1, 30 * x);
 
         light.position.set(-x, x * 2, x * 2);
         light2.position.set(x, x * 2, x * 2);
@@ -37,7 +37,7 @@ const Model = (props) => {
 
     const setUpObject = (scene) => {
         const object = new OBJLoader().parse(props.objectData);
-        const material = new THREE.MeshLambertMaterial({ color: 0xd4d4d4 });
+        const material = new THREE.MeshLambertMaterial({ color: 0xaaaaaa });
         const texture = props.texture
             ? new THREE.TextureLoader().load(props.texture)
             : null;

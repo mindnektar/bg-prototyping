@@ -1,6 +1,6 @@
 const { v4: uuid } = require('uuid');
 
-export default ({ type = 'Custom_Model', mesh, texture, contents, position, rotation, scale, color, gridSnapping, locked, cardRows, cardColumns, preciseCollision }) => {
+export default ({ type, mesh, texture, contents, position, rotation, scale, color, gridSnapping, locked, preciseCollision }) => {
     let typeData = {};
 
     switch (type) {
@@ -14,24 +14,7 @@ export default ({ type = 'Custom_Model', mesh, texture, contents, position, rota
             };
             break;
 
-        case 'Deck':
-            typeData = {
-                SidewaysCard: false,
-                DeckIDs: contents,
-                CustomDeck: {
-                    1: {
-                        FaceURL: texture,
-                        BackURL: texture,
-                        NumWidth: cardRows,
-                        NumHeight: cardColumns,
-                        BackIsHidden: true,
-                        UniqueBack: false,
-                    },
-                },
-            };
-            break;
-
-        default: {
+        case 'Custom_Model': {
             typeData = {
                 CustomMesh: {
                     MeshURL: mesh,
@@ -54,6 +37,11 @@ export default ({ type = 'Custom_Model', mesh, texture, contents, position, rota
                     CastShadows: true,
                 },
             };
+            break;
+        }
+
+        default: {
+            typeData = {};
         }
     }
 

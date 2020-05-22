@@ -174,7 +174,7 @@ export default {
                 scale: 2,
                 contents: {
                     group: 'Building cards',
-                    indexes: items.buildingCards.map((_, index) => index + 100),
+                    indexes: Object.keys(items.buildingCards),
                 },
             },
             {
@@ -184,7 +184,8 @@ export default {
             },
             ...items.playerBoards.map((_, index) => ({
                 group: 'Player boards',
-                index,
+                textureIndex: index,
+                modelIndex: 0,
                 position: { x: (index * 24) - 36, z: -22 },
                 rotation: { y: 180 },
                 locked: true,
@@ -192,25 +193,29 @@ export default {
             })),
             ...items.playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
-                index,
+                textureIndex: index,
+                modelIndex: 0,
                 position: { x: (index * 24) - 41, y: 1.5, z: -22 },
                 rotation: { y: 180 },
             })),
             ...items.playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
-                index,
+                textureIndex: index,
+                modelIndex: 0,
                 position: { x: (index * 24) - 36.5, y: 1.5, z: -22 },
                 rotation: { y: 180 },
             })),
             ...items.playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
-                index,
+                textureIndex: index,
+                modelIndex: 0,
                 position: { x: (index * 24) - 32, y: 1.5, z: -22 },
                 rotation: { y: 180 },
             })),
             ...items.playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
-                index,
+                textureIndex: index,
+                modelIndex: 0,
                 position: { x: (index * 24) - 27.5, y: 1.5, z: -22 },
                 rotation: { y: 180 },
             })),

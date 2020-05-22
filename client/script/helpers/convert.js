@@ -54,7 +54,7 @@ const generateCustomFiles = (groups, updateProgress) => (
             const models = group.model
                 ? [{
                     type: 'model',
-                    content: group.model.obj,
+                    content: group.model,
                     filename: 0,
                     folder: group.label,
                 }]
