@@ -6,10 +6,13 @@ import JSZip from 'jszip';
 import axios from 'axios';
 
 const calculateCardSprites = (groups) => (
-    groups.filter(({ model, models }) => !model && !models).map((group) => {
+    groups.filter(({ type }) => type === 'card').map((group) => {
         const sizeCheck = document.querySelector('.card-size-check');
 
-        ReactDOM.render(React.createElement(group.component, group.items[0]), sizeCheck);
+        ReactDOM.render(
+            React.createElement(group.items[0].component, group.items[0].props),
+            sizeCheck
+        );
 
         const { width, height } = sizeCheck.getBoundingClientRect();
         let rows = 1;
@@ -46,7 +49,7 @@ const drawImageWithRotation = (context, imageElem, x, y, width, height, degrees)
 
 const generateCustomFiles = (groups, updateProgress) => (
     sequential((
-        groups.filter(({ model, models }) => !!model || !!models).map((group) => async () => {
+        groups.filter(({ type }) => type !== 'card').map((group) => async () => {
             const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
             const models = group.model
                 ? [{
@@ -55,9 +58,9 @@ const generateCustomFiles = (groups, updateProgress) => (
                     filename: 0,
                     folder: group.label,
                 }]
-                : group.models.map((obj, index) => ({
+                : group.items.map((item, index) => ({
                     type: 'model',
-                    content: obj,
+                    content: item.model,
                     filename: index,
                     folder: group.label,
                 }));
@@ -65,7 +68,7 @@ const generateCustomFiles = (groups, updateProgress) => (
             return [
                 ...await sequential((
                     Array.from(convertibles).map((convertible, index) => async () => {
-                        const { textureSize, textureMap } = group.model;
+                        const { textureSize, textureMap, label } = group;
                         const canvas = document.createElement('canvas');
                         const context = canvas.getContext('2d');
                         const faces = Array.from(convertible.querySelectorAll('.face'));
@@ -105,7 +108,7 @@ const generateCustomFiles = (groups, updateProgress) => (
                             type: 'texture',
                             dataUrl: canvas.toDataURL(),
                             filename: index,
-                            folder: group.label,
+                            folder: label,
                         };
 
                         updateProgress();
@@ -121,7 +124,7 @@ const generateCustomFiles = (groups, updateProgress) => (
 
 const generateCardFiles = (groups, cardSprites, updateProgress) => (
     sequential((
-        groups.filter(({ model }) => !model).map((group) => async () => {
+        groups.filter(({ type }) => type === 'card').map((group) => async () => {
             const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
 
             if (convertibles.length === 0) {

@@ -9,43 +9,13 @@ const Group = (props) => {
     const [activeModel, setActiveModel] = useState(null);
 
     const openModelHandler = (index) => () => {
-        if (props.model || props.models) {
+        if (props.type === 'model') {
             setActiveModel(index);
         }
     };
 
     const closeModel = () => {
         setActiveModel(null);
-    };
-
-    const renderItem = (item, index) => (
-        <div
-            key={index}
-            className="group__item"
-            onClick={openModelHandler(index)}
-        >
-            {props.component ? (
-                <Convertible group={props.label}>
-                    {React.createElement(props.component, item)}
-                </Convertible>
-            ) : (
-                <ModelThumbnail obj={item} />
-            )}
-
-            <div className="group__item-index">#{index + 1}</div>
-        </div>
-    );
-
-    const renderItems = () => {
-        if (props.models) {
-            return props.models.map(renderItem);
-        }
-
-        return props.items ? (
-            props.items.map(renderItem)
-        ) : (
-            renderItem(null, 0)
-        );
     };
 
     return !props.filtered && (
@@ -57,9 +27,9 @@ const Group = (props) => {
 
             {activeModel !== null && (
                 <Model
-                    obj={props.models ? props.models[activeModel] : props.model.obj}
+                    obj={props.items[activeModel].model || props.model}
                     texture={
-                        props.component
+                        props.items[activeModel].component
                             ? `/images/rev9/textures/${props.label}/${activeModel}.png`
                             : null
                     }
@@ -68,7 +38,23 @@ const Group = (props) => {
             )}
 
             <div className="group__items">
-                {renderItems()}
+                {props.items.map((item, index) => (
+                    <div
+                        key={index}
+                        className="group__item"
+                        onClick={openModelHandler(index)}
+                    >
+                        {item.component ? (
+                            <Convertible group={props.label}>
+                                {React.createElement(item.component, item.props)}
+                            </Convertible>
+                        ) : (
+                            <ModelThumbnail obj={item.model} />
+                        )}
+
+                        <div className="group__item-index">#{index + 1}</div>
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -76,18 +62,16 @@ const Group = (props) => {
 
 Group.defaultProps = {
     items: null,
+    type: 'model',
     model: null,
-    models: null,
-    component: null,
 };
 
 Group.propTypes = {
     label: PropTypes.string.isRequired,
     items: PropTypes.array,
-    component: PropTypes.func,
     filtered: PropTypes.bool.isRequired,
-    model: PropTypes.object,
-    models: PropTypes.array,
+    type: PropTypes.string,
+    model: PropTypes.string,
 };
 
 export default Group;

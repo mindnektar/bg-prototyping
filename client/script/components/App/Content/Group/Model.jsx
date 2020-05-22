@@ -5,12 +5,11 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Close from 'atoms/Close';
 
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-
 const Model = (props) => {
     const sceneRef = useRef();
 
     useEffect(() => {
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(
             75,

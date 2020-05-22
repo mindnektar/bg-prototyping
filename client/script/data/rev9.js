@@ -1,30 +1,8 @@
-import BuildingCard from 'components/rev9/BuildingCard';
-import Resource from 'components/rev9/Resource';
-import Tile from 'components/rev9/Tile';
-import Gold from 'components/rev9/Gold';
-import StartTile from 'components/rev9/StartTile';
-import PlayerBoard from 'components/rev9/PlayerBoard';
-import PlayerBoardCover from 'components/rev9/PlayerBoardCover';
-import GameBoard from 'components/rev9/GameBoard';
-import buildingCards from './rev9/items/building-cards';
-import resources from './rev9/items/resources';
-import tiles from './rev9/items/tiles';
-import gold from './rev9/items/gold';
-import playerBoards from './rev9/items/player-boards';
-import playerBoardCovers from './rev9/items/player-board-covers';
-import goldModel from './rev9/models/gold.obj';
-import startTileModel from './rev9/models/start-tile.obj';
-import playerBoardModel from './rev9/models/player-board.obj';
-import playerBoardCoverModel from './rev9/models/player-board-cover.obj';
-import tileModel from './rev9/models/tile.obj';
-import resourceModel from './rev9/models/resource.obj';
-import dwellingModel from './rev9/models/dwelling.obj';
-import houseAModel from './rev9/models/house-a.obj';
-import houseBModel from './rev9/models/house-b.obj';
-import houseCModel from './rev9/models/house-c.obj';
-import houseDModel from './rev9/models/house-d.obj';
-import wagonModel from './rev9/models/wagon.obj';
-import gameBoardModel from './rev9/models/game-board.obj';
+/* eslint-disable import/no-unresolved */
+import * as components from './rev9/components';
+import * as items from './rev9/items';
+import * as models from './rev9/models';
+/* eslint-enable import/no-unresolved */
 
 const resourceColors = ['#5a8236', '#898b90', '#a9d283', '#e8df6f'];
 
@@ -32,106 +10,117 @@ export default {
     groups: [
         {
             label: 'Game board',
-            component: GameBoard,
-            model: {
-                obj: gameBoardModel,
-                textureSize: 6144,
-                textureMap: [
-                    ['building-site', 0.521, 0.667, 0.836, 0.333, 90],
-                    ['center', 0.26, 0.565, 0.521, 0, 180],
-                    ['market', 0.521, 1, 0.836, 0.667, 90],
-                ],
-            },
+            items: [{ component: components.gameBoard }],
+            model: models.gameBoard,
+            textureSize: 6144,
+            textureMap: [
+                ['building-site', 0.521, 0.667, 0.836, 0.333, 90],
+                ['center', 0.26, 0.565, 0.521, 0, 180],
+                ['market', 0.521, 1, 0.836, 0.667, 90],
+            ],
         },
         {
             label: 'Player boards',
-            items: playerBoards,
-            component: PlayerBoard,
-            model: {
-                obj: playerBoardModel,
-                textureSize: 4096,
-                textureMap: [
-                    ['wagon', 0.439, 0.439, 0.614, 0],
-                    ['inset', 0.614, 0.439, 0.79, 0],
-                    ['bridge', 0.745, 0.877, 0.767, 0.439],
-                    ['inset', 0.79, 0.877, 0.965, 0.439],
-                    ['bridge', 0.767, 0.877, 0.79, 0.439],
-                    ['inset', 0.79, 0.439, 0.965, 0],
-                    ['bridge', 0.723, 0.877, 0.745, 0.439],
-                    ['inset', 0.439, 0.877, 0.614, 0.439],
-                    ['bridge', 0.702, 0.877, 0.723, 0.439],
-                ],
-            },
+            items: items.playerBoards.map((item) => ({
+                component: components.playerBoard,
+                props: item,
+            })),
+            model: models.playerBoard,
+            textureSize: 4096,
+            textureMap: [
+                ['wagon', 0.439, 0.439, 0.614, 0],
+                ['inset', 0.614, 0.439, 0.79, 0],
+                ['bridge', 0.745, 0.877, 0.767, 0.439],
+                ['inset', 0.79, 0.877, 0.965, 0.439],
+                ['bridge', 0.767, 0.877, 0.79, 0.439],
+                ['inset', 0.79, 0.439, 0.965, 0],
+                ['bridge', 0.723, 0.877, 0.745, 0.439],
+                ['inset', 0.439, 0.877, 0.614, 0.439],
+                ['bridge', 0.702, 0.877, 0.723, 0.439],
+            ],
         },
         {
             label: 'Player board covers',
-            items: playerBoardCovers,
-            component: PlayerBoardCover,
-            model: {
-                obj: playerBoardCoverModel,
-                textureSize: 1024,
-                textureMap: [
-                    ['default', 0.481, 0.667, 0.963, 0],
-                ],
-            },
+            items: items.playerBoardCovers.map((item) => ({
+                component: components.playerBoardCover,
+                props: item,
+            })),
+            model: models.playerBoardCover,
+            textureSize: 1024,
+            textureMap: [
+                ['default', 0.481, 0.667, 0.963, 0],
+            ],
         },
         {
             label: 'Start tile',
-            component: StartTile,
-            model: {
-                obj: startTileModel,
-                textureSize: 1024,
-                textureMap: [
-                    ['default', 0, 1, 0.5, 0.5],
-                ],
-            },
+            items: [{ component: components.startTile }],
+            model: models.startTile,
+            textureSize: 1024,
+            textureMap: [
+                ['default', 0, 1, 0.5, 0.5],
+            ],
         },
         {
             label: 'Tiles',
-            items: tiles,
-            component: Tile,
-            model: {
-                obj: tileModel,
-                textureSize: 1024,
-                textureMap: [
-                    ['default', 0, 1, 0.5, 0.5],
-                ],
-            },
+            items: items.tiles.map((item) => ({
+                component: components.tile,
+                props: item,
+            })),
+            model: models.tile,
+            textureSize: 1024,
+            textureMap: [
+                ['default', 0, 1, 0.5, 0.5],
+            ],
         },
         {
             label: 'Resources',
-            items: resources,
-            component: Resource,
-            model: {
-                obj: resourceModel,
-                textureSize: 1024,
-                textureMap: [
-                    ['default', 0, 1, 0.5, 0.5, (360 / 32) * 30.5],
-                    ['default', 0, 0.5, 0.5, 0, (360 / 32) * 22.5],
-                ],
-            },
+            items: items.resources.map((item) => ({
+                component: components.resource,
+                props: item,
+            })),
+            model: models.resource,
+            textureSize: 1024,
+            textureMap: [
+                ['default', 0, 1, 0.5, 0.5, (360 / 32) * 30.5],
+                ['default', 0, 0.5, 0.5, 0, (360 / 32) * 22.5],
+            ],
         },
         {
             label: 'Gold',
-            items: gold,
-            component: Gold,
-            model: {
-                obj: goldModel,
-                textureSize: 1024,
-                textureMap: [
-                    ['default', 0, 1, 0.5, 0.5, (360 / 32) * 26.5],
-                    ['default', 0, 0.5, 0.5, 0, (360 / 32) * 17.5],
-                ],
-            },
+            items: items.gold.map((item) => ({
+                component: components.gold,
+                props: item,
+            })),
+            model: models.gold,
+            textureSize: 1024,
+            textureMap: [
+                ['default', 0, 1, 0.5, 0.5, (360 / 32) * 26.5],
+                ['default', 0, 0.5, 0.5, 0, (360 / 32) * 17.5],
+            ],
         },
         {
             label: 'Building cards',
-            items: buildingCards,
-            component: BuildingCard,
+            type: 'card',
+            items: items.buildingCards.map((item) => ({
+                component: components.buildingCard,
+                props: item,
+            })),
         },
         {
             label: 'Pieces',
-            models: [dwellingModel, houseAModel, houseBModel, houseCModel, houseDModel, wagonModel],
+            items: [{
+                model: models.dwelling,
+            }, {
+                model: models.houseA,
+            }, {
+                model: models.houseB,
+            }, {
+                model: models.houseC,
+            }, {
+                model: models.houseD,
+            }, {
+                model: models.wagon,
+            }],
         },
     ],
     tts: {
@@ -149,11 +138,11 @@ export default {
                 rotation: { y: 180 },
                 contents: {
                     group: 'Tiles',
-                    indexes: tiles.map((_, index) => index),
+                    indexes: items.tiles.map((_, index) => index),
                     gridSnapping: true,
                 },
             },
-            ...resources.map((_, index) => ({
+            ...items.resources.map((_, index) => ({
                 type: 'Infinite_Bag',
                 position: {
                     x: (Math.floor(index / 3) * 4) - 8,
@@ -166,7 +155,7 @@ export default {
                     indexes: [index],
                 },
             })),
-            ...gold.map((_, index) => ({
+            ...items.gold.map((_, index) => ({
                 type: 'Infinite_Bag',
                 position: {
                     x: 8,
@@ -185,7 +174,7 @@ export default {
                 scale: 2,
                 contents: {
                     group: 'Building cards',
-                    indexes: buildingCards.map((_, index) => index + 100),
+                    indexes: items.buildingCards.map((_, index) => index + 100),
                 },
             },
             {
@@ -193,7 +182,7 @@ export default {
                 position: { x: -4, z: -4 },
                 gridSnapping: true,
             },
-            ...playerBoards.map((_, index) => ({
+            ...items.playerBoards.map((_, index) => ({
                 group: 'Player boards',
                 index,
                 position: { x: (index * 24) - 36, z: -22 },
@@ -201,25 +190,25 @@ export default {
                 locked: true,
                 preciseCollision: true,
             })),
-            ...playerBoardCovers.map((_, index) => ({
+            ...items.playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
                 index,
                 position: { x: (index * 24) - 41, y: 1.5, z: -22 },
                 rotation: { y: 180 },
             })),
-            ...playerBoardCovers.map((_, index) => ({
+            ...items.playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
                 index,
                 position: { x: (index * 24) - 36.5, y: 1.5, z: -22 },
                 rotation: { y: 180 },
             })),
-            ...playerBoardCovers.map((_, index) => ({
+            ...items.playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
                 index,
                 position: { x: (index * 24) - 32, y: 1.5, z: -22 },
                 rotation: { y: 180 },
             })),
-            ...playerBoardCovers.map((_, index) => ({
+            ...items.playerBoardCovers.map((_, index) => ({
                 group: 'Player board covers',
                 index,
                 position: { x: (index * 24) - 27.5, y: 1.5, z: -22 },

@@ -1,8 +1,8 @@
 import React from 'react';
-import Resource from 'components/rev9/Resource';
-import VP from 'components/rev9/VP';
-import Gold from 'components/rev9/Gold';
 import Icon from 'atoms/Icon';
+import Resource from '../components/Resource';
+import VP from '../components/VP';
+import Gold from '../components/Gold';
 
 export default [
     {
