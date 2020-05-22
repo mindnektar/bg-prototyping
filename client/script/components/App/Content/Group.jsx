@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Convertible from 'Convertible';
 import Headline from 'atoms/Headline';
-import Model from './Group/Model';
-import ModelThumbnail from './Group/ModelThumbnail';
+import Model from 'Model';
+import ModelLightbox from './Group/ModelLightbox';
 
 const Group = (props) => {
     const [activeModel, setActiveModel] = useState(null);
@@ -26,7 +26,7 @@ const Group = (props) => {
             <Headline>{props.label}</Headline>
 
             {activeModel !== null && (
-                <Model
+                <ModelLightbox
                     obj={props.items[activeModel].model || props.model}
                     texture={
                         props.items[activeModel].component
@@ -49,7 +49,9 @@ const Group = (props) => {
                                 {React.createElement(item.component, item.props)}
                             </Convertible>
                         ) : (
-                            <ModelThumbnail obj={item.model} />
+                            <div className="group__model-thumbnail">
+                                <Model objectData={item.model} />
+                            </div>
                         )}
 
                         <div className="group__item-index">#{index + 1}</div>
