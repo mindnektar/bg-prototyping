@@ -1,4 +1,5 @@
 export default [
-    { value: 1, silver: true },
-    { value: 5 },
+    { value: 1, type: 'copper' },
+    { value: 5, type: 'silver' },
+    { value: 10 },
 ];

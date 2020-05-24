@@ -54,7 +54,7 @@ const Group = (props) => {
                             </div>
                         )}
 
-                        <div className="group__item-index">#{index + 1}</div>
+                        <div className="group__item-index">#{index}</div>
                     </div>
                 ))}
             </div>

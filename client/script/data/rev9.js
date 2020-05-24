@@ -87,11 +87,37 @@ export default {
             ],
         },
         {
-            label: 'Gold',
-            items: items.gold.map((item) => ({
+            label: 'Copper',
+            items: [{
                 component: components.gold,
-                props: item,
-            })),
+                props: { value: 1, type: 'copper' },
+            }],
+            model: models.copper,
+            textureSize: 1024,
+            textureMap: [
+                ['default', 0, 1, 0.5, 0.5, (360 / 32) * 26.5],
+                ['default', 0, 0.5, 0.5, 0, (360 / 32) * 17.5],
+            ],
+        },
+        {
+            label: 'Silver',
+            items: [{
+                component: components.gold,
+                props: { value: 5, type: 'silver' },
+            }],
+            model: models.silver,
+            textureSize: 1024,
+            textureMap: [
+                ['default', 0, 1, 0.5, 0.5, (360 / 32) * 26.5],
+                ['default', 0, 0.5, 0.5, 0, (360 / 32) * 17.5],
+            ],
+        },
+        {
+            label: 'Gold',
+            items: [{
+                component: components.gold,
+                props: { value: 10 },
+            }],
             model: models.gold,
             textureSize: 1024,
             textureMap: [
@@ -130,6 +156,8 @@ export default {
             }, {
                 model: models.constructionCompletionMarker,
                 collider: models.constructionCompletionMarkerCollider,
+            }, {
+                model: models.diamond,
             }],
         },
     ],
@@ -213,16 +241,16 @@ export default {
                 infinite: true,
                 contents: [{
                     type: 'custom',
-                    group: 'Gold',
-                    textureIndex: index,
+                    group: ['Copper', 'Silver', 'Gold'][index],
+                    textureIndex: 0,
                     modelIndex: 0,
                 }],
             })),
             {
                 type: 'bag',
                 position: {
-                    x: 8,
-                    z: 8,
+                    x: 12,
+                    z: 2,
                 },
                 rotation: { y: 180 },
                 locked: true,
@@ -232,6 +260,23 @@ export default {
                     group: 'Pieces',
                     modelIndex: 0,
                     color: '#ffffff',
+                }],
+            },
+            {
+                type: 'bag',
+                position: {
+                    x: 12,
+                    z: 6,
+                },
+                rotation: { y: 180 },
+                locked: true,
+                infinite: true,
+                contents: [{
+                    type: 'custom',
+                    group: 'Pieces',
+                    modelIndex: 10,
+                    color: '#cccccc',
+                    glass: true,
                 }],
             },
             {
@@ -312,7 +357,19 @@ export default {
                 modelIndex: 5,
                 color: playerColors[index],
                 position: {
-                    x: (index * 24) - 36,
+                    x: (index * 24) - 37,
+                    y: 2,
+                    z: -34,
+                },
+                rotation: { y: 180 },
+            })),
+            ...Array(4).fill(null).map((_, index) => ({
+                type: 'custom',
+                group: 'Pieces',
+                modelIndex: 7,
+                color: playerColors[index],
+                position: {
+                    x: (index * 24) - 35,
                     y: 2,
                     z: -34,
                 },
