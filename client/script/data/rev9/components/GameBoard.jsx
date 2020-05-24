@@ -7,24 +7,18 @@ import Market from './GameBoard/Market';
 import ScoreTrack from './GameBoard/ScoreTrack';
 
 const GameBoard = () => (
-    <>
-        <Face name="building-site">
-            <BuildingSite />
+    <div className="rev9-game-board">
+        <BuildingSite />
+
+        <Face name="center" className="rev9-game-board__center">
+            <ScoreTrack>
+                <Tower />
+                <Actions />
+            </ScoreTrack>
         </Face>
 
-        <Face name="center">
-            <div className="rev9-game-board__center">
-                <ScoreTrack>
-                    <Tower />
-                    <Actions />
-                </ScoreTrack>
-            </div>
-        </Face>
-
-        <Face name="market">
-            <Market />
-        </Face>
-    </>
+        <Market />
+    </div>
 );
 
 export default GameBoard;

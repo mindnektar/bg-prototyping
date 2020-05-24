@@ -32,7 +32,39 @@ const calculateCardSprites = (groups) => (
             group: group.label,
             rows,
             columns,
+            count: group.items.length,
         };
+    })
+);
+
+const calculateSnapPoints = (groups) => (
+    groups.filter(({ type }) => type !== 'custom').map((group) => {
+        const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
+        const convertible = convertibles[0];
+        const result = { group: group.label, snapPoints: [] };
+
+        if (!convertible) {
+            return result;
+        }
+
+        const convertibleRect = convertible.getBoundingClientRect();
+        const convertibleX = convertibleRect.left + (convertibleRect.width / 2);
+        const convertibleY = convertibleRect.top + (convertibleRect.height / 2);
+        const snapPoints = Array.from(convertible.querySelectorAll('[data-snap-point]'));
+
+        result.snapPoints = snapPoints.map((snapPoint) => {
+            const snapPointRect = snapPoint.getBoundingClientRect();
+            const snapPointX = snapPointRect.left + (snapPointRect.width / 2);
+            const snapPointY = snapPointRect.top + (snapPointRect.height / 2);
+
+            return {
+                x: (snapPointX - convertibleX) / 100,
+                y: 0,
+                z: (snapPointY - convertibleY) / 100,
+            };
+        });
+
+        return result;
     })
 );
 
@@ -196,8 +228,8 @@ export default async ({ groups, tts, shouldUpdateTextures, setProgress, path }) 
     setProgress({ image: { done: 0, total: 0 } });
 
     const formData = new FormData();
-
     const cardSprites = calculateCardSprites(groups);
+    const snapPoints = calculateSnapPoints(groups);
 
     if (shouldUpdateTextures) {
         const allConvertibles = document.querySelectorAll('.convertible');
@@ -226,15 +258,25 @@ export default async ({ groups, tts, shouldUpdateTextures, setProgress, path }) 
     formData.append('tts', JSON.stringify({
         ...tts,
         objects: tts.objects.map((object) => {
-            if (object.type === 'Deck') {
-                const { rows, columns } = cardSprites.find((sprite) => (
-                    sprite.group === object.contents.group
+            if (object.type === 'deck') {
+                const { rows, columns, count } = cardSprites.find((sprite) => (
+                    sprite.group === object.group
                 ));
 
                 return {
                     ...object,
                     cardRows: rows,
                     cardColumns: columns,
+                    cardCount: count,
+                };
+            }
+
+            if (object.type === 'custom') {
+                return {
+                    ...object,
+                    snapPoints: snapPoints.find((sprite) => (
+                        sprite.group === object.group
+                    )).snapPoints,
                 };
             }
 

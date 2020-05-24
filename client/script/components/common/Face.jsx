@@ -1,14 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Face = (props) => (
-    <div className="face" data-name={props.name}>
-        {props.children}
+const Face = ({ children, name, ...props }) => (
+    <div
+        {...props}
+        data-face={name}
+    >
+        {children}
     </div>
 );
 
+Face.defaultProps = {
+    children: null,
+};
+
 Face.propTypes = {
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
     name: PropTypes.string.isRequired,
 };
 

@@ -1,10 +1,11 @@
 import React from 'react';
+import Face from 'Face';
 import Icon from 'atoms/Icon';
 import Gold from '../Gold';
 import Resource from '../Resource';
 
 const Market = () => (
-    <div className="rev9-market">
+    <Face name="market" className="rev9-market">
         <div className="rev9-market__top">
             <div className="rev9-market__building-cards">
                 <div className="rev9-market__building-card-stack">
@@ -85,7 +86,7 @@ const Market = () => (
                 </div>
             ))}
         </div>
-    </div>
+    </Face>
 );
 
 export default Market;

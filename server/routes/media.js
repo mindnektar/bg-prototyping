@@ -7,8 +7,9 @@ import JSZip from 'jszip';
 import FtpClient from 'promise-ftp';
 import sequential from 'promise-sequential';
 import ttsFile from './tts/file';
-import ttsObject from './tts/object';
+import ttsCustom from './tts/custom';
 import ttsDeck from './tts/deck';
+import ttsBag from './tts/bag';
 
 const router = express.Router();
 
@@ -60,38 +61,38 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
 
     const now = new Date().getTime();
 
+    const mapObjects = (object) => {
+        if (object.type === 'custom') {
+            return ttsCustom({
+                ...object,
+                type: 'Custom_Model',
+                mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.modelIndex || 0}.obj?${now}`,
+                texture: object.textureIndex !== undefined
+                    ? `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.textureIndex}.png?${now}`
+                    : null,
+            });
+        }
+
+        if (object.type === 'deck') {
+            return ttsDeck({
+                ...object,
+                texture: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}.png?${now}`,
+            });
+        }
+
+        if (object.type === 'bag') {
+            return ttsBag({
+                ...object,
+                contents: object.contents.map(mapObjects).filter(Boolean),
+            });
+        }
+
+        return null;
+    };
+
     const result = ttsFile({
         ...tts,
-        objects: tts.objects.map((object) => {
-            if (!object.type) {
-                return ttsObject({
-                    ...object,
-                    type: 'Custom_Model',
-                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.modelIndex || 0}.obj?${now}`,
-                    texture: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.textureIndex || 0}.png?${now}`,
-                });
-            }
-
-            if (object.type === 'Deck') {
-                return ttsDeck({
-                    ...object,
-                    texture: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}.png?${now}`,
-                    contents: object.contents.indexes.map((index) => (
-                        parseInt(index, 10) + 100
-                    )),
-                });
-            }
-
-            return ttsObject({
-                ...object,
-                contents: object.contents.indexes.map((index) => ttsObject({
-                    ...object.contents,
-                    type: 'Custom_Model',
-                    mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}/0.obj?${now}`,
-                    texture: `http://denk.alfahosting.org${directory}${urlSafe(object.contents.group)}/${index}.png?${now}`,
-                })),
-            });
-        }),
+        objects: tts.objects.map(mapObjects).filter(Boolean),
     });
 
     res.send(result);

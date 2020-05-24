@@ -5,6 +5,7 @@ import * as models from './rev9/models';
 /* eslint-enable import/no-unresolved */
 
 const resourceColors = ['#5a8236', '#898b90', '#a9d283', '#e8df6f'];
+const playerColors = ['#f3f197', '#cc9dcc', '#9a9aff', '#f1bd60'];
 
 export default {
     groups: [
@@ -14,9 +15,9 @@ export default {
             model: models.gameBoard,
             textureSize: 6144,
             textureMap: [
-                ['building-site', 0.521, 0.667, 0.836, 0.333, 90],
-                ['center', 0.26, 0.565, 0.521, 0, 180],
-                ['market', 0.521, 1, 0.836, 0.667, 90],
+                ['building-site', 0.517, 0.667, 0.831, 0.333, 90],
+                ['center', 0, 0.565, 0.259, 0],
+                ['market', 0, 0.898, 0.314, 0.565, 90],
             ],
         },
         {
@@ -120,103 +121,185 @@ export default {
                 model: models.houseD,
             }, {
                 model: models.wagon,
+            }, {
+                model: models.scoreMarker,
+            }, {
+                model: models.constructionSiteMarker,
+            }, {
+                model: models.constructionProgressMarker,
+            }, {
+                model: models.constructionCompletionMarker,
             }],
         },
     ],
     tts: {
         objects: [
             {
+                type: 'custom',
                 group: 'Game board',
-                position: { x: 0, z: 20 },
+                textureIndex: 0,
+                modelIndex: 0,
+                position: { x: 0, y: 0.05, z: 20 },
                 rotation: { y: 180 },
                 locked: true,
                 preciseCollision: true,
             },
+            ...Array(4).fill(null).map((_, index) => ({
+                type: 'custom',
+                group: 'Pieces',
+                modelIndex: 6,
+                color: playerColors[index],
+                position: {
+                    x: -5.4,
+                    y: 0.2 + (index * 0.2),
+                    z: 32.6,
+                },
+                rotation: { y: 180 },
+            })),
             {
-                type: 'Bag',
+                type: 'bag',
                 position: { x: 0, z: -4 },
                 rotation: { y: 180 },
-                contents: {
+                locked: true,
+                contents: items.tiles.map((_, index) => ({
+                    type: 'custom',
                     group: 'Tiles',
-                    indexes: items.tiles.map((_, index) => index),
+                    textureIndex: index,
+                    modelIndex: 0,
                     gridSnapping: true,
-                },
+                })),
             },
             ...items.resources.map((_, index) => ({
-                type: 'Infinite_Bag',
+                type: 'bag',
                 position: {
                     x: (Math.floor(index / 3) * 4) - 8,
                     z: (index % 3) * 4,
                 },
                 rotation: { y: 180 },
                 color: resourceColors[Math.floor(index / 3)],
-                contents: {
+                locked: true,
+                infinite: true,
+                contents: [{
+                    type: 'custom',
                     group: 'Resources',
-                    indexes: [index],
-                },
+                    textureIndex: index,
+                    modelIndex: 0,
+                }],
             })),
             ...items.gold.map((_, index) => ({
-                type: 'Infinite_Bag',
+                type: 'bag',
                 position: {
                     x: 8,
-                    z: ((index % 3) * 4) + 2,
+                    z: index * 4,
                 },
                 rotation: { y: 180 },
-                contents: {
+                locked: true,
+                infinite: true,
+                contents: [{
+                    type: 'custom',
                     group: 'Gold',
-                    indexes: [index],
-                },
+                    textureIndex: index,
+                    modelIndex: 0,
+                }],
             })),
             {
-                type: 'Deck',
+                type: 'bag',
+                position: {
+                    x: 8,
+                    z: 8,
+                },
+                rotation: { y: 180 },
+                locked: true,
+                infinite: true,
+                contents: [{
+                    type: 'custom',
+                    group: 'Pieces',
+                    modelIndex: 0,
+                    color: '#ffffff',
+                }],
+            },
+            {
+                type: 'deck',
+                group: 'Building cards',
                 position: { x: 0, z: -12 },
                 rotation: { y: 180 },
                 scale: 2,
-                contents: {
-                    group: 'Building cards',
-                    indexes: Object.keys(items.buildingCards),
-                },
             },
             {
+                type: 'custom',
                 group: 'Start tile',
+                textureIndex: 0,
+                modelIndex: 0,
                 position: { x: -4, z: -4 },
                 gridSnapping: true,
             },
             ...items.playerBoards.map((_, index) => ({
+                type: 'custom',
                 group: 'Player boards',
                 textureIndex: index,
                 modelIndex: 0,
-                position: { x: (index * 24) - 36, z: -22 },
+                position: { x: (index * 24) - 36, y: 0.2, z: -27 },
                 rotation: { y: 180 },
                 locked: true,
                 preciseCollision: true,
             })),
             ...items.playerBoardCovers.map((_, index) => ({
+                type: 'custom',
                 group: 'Player board covers',
                 textureIndex: index,
                 modelIndex: 0,
-                position: { x: (index * 24) - 41, y: 1.5, z: -22 },
+                position: { x: (index * 24) - 41, y: 0.25, z: -27 },
                 rotation: { y: 180 },
             })),
             ...items.playerBoardCovers.map((_, index) => ({
+                type: 'custom',
                 group: 'Player board covers',
                 textureIndex: index,
                 modelIndex: 0,
-                position: { x: (index * 24) - 36.5, y: 1.5, z: -22 },
+                position: { x: (index * 24) - 36.5, y: 0.25, z: -27 },
                 rotation: { y: 180 },
             })),
             ...items.playerBoardCovers.map((_, index) => ({
+                type: 'custom',
                 group: 'Player board covers',
                 textureIndex: index,
                 modelIndex: 0,
-                position: { x: (index * 24) - 32, y: 1.5, z: -22 },
+                position: { x: (index * 24) - 32, y: 0.25, z: -27 },
                 rotation: { y: 180 },
             })),
             ...items.playerBoardCovers.map((_, index) => ({
+                type: 'custom',
                 group: 'Player board covers',
                 textureIndex: index,
                 modelIndex: 0,
-                position: { x: (index * 24) - 27.5, y: 1.5, z: -22 },
+                position: { x: (index * 24) - 27.5, y: 0.25, z: -27 },
+                rotation: { y: 180 },
+            })),
+            ...Array(4).fill(null).reduce((result, current, playerIndex) => [
+                ...result,
+                ...Array(4).fill(null).map((_, buildingIndex) => ({
+                    type: 'custom',
+                    group: 'Pieces',
+                    modelIndex: buildingIndex + 1,
+                    color: playerColors[playerIndex],
+                    position: {
+                        x: ((playerIndex * 24) - 42) + (4.5 * buildingIndex),
+                        y: 2,
+                        z: -27,
+                    },
+                    rotation: { y: 180 },
+                })),
+            ], []),
+            ...Array(4).fill(null).map((_, index) => ({
+                type: 'custom',
+                group: 'Pieces',
+                modelIndex: 5,
+                color: playerColors[index],
+                position: {
+                    x: (index * 24) - 36,
+                    y: 2,
+                    z: -34,
+                },
                 rotation: { y: 180 },
             })),
         ],

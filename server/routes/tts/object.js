@@ -1,50 +1,6 @@
 const { v4: uuid } = require('uuid');
 
-export default ({ type, mesh, texture, contents, position, rotation, scale, color, gridSnapping, locked, preciseCollision }) => {
-    let typeData = {};
-
-    switch (type) {
-        case 'Bag':
-        case 'Infinite_Bag':
-            typeData = {
-                MaterialIndex: -1,
-                MeshIndex: -1,
-                Number: 0,
-                ContainedObjects: contents,
-            };
-            break;
-
-        case 'Custom_Model': {
-            typeData = {
-                CustomMesh: {
-                    MeshURL: mesh,
-                    DiffuseURL: texture,
-                    NormalURL: '',
-                    ColliderURL: preciseCollision ? mesh : '',
-                    Convex: !preciseCollision,
-                    MaterialIndex: 3,
-                    TypeIndex: 0,
-                    CustomShader: {
-                        SpecularColor: {
-                            r: 1.0,
-                            g: 1.0,
-                            b: 1.0,
-                        },
-                        SpecularIntensity: 0.0,
-                        SpecularSharpness: 2.0,
-                        FresnelStrength: 0.0,
-                    },
-                    CastShadows: true,
-                },
-            };
-            break;
-        }
-
-        default: {
-            typeData = {};
-        }
-    }
-
+export default ({ type, position, rotation, scale, color, gridSnapping, locked, snapPoints = [] }) => {
     const positionValues = { posX: 0, posY: 1, posZ: 0 };
 
     if (position) {
@@ -53,7 +9,7 @@ export default ({ type, mesh, texture, contents, position, rotation, scale, colo
         }
 
         if (position.y) {
-            positionValues.posY = position.y;
+            positionValues.posY += position.y;
         }
 
         if (position.z) {
@@ -113,10 +69,10 @@ export default ({ type, mesh, texture, contents, position, rotation, scale, colo
         GridProjection: false,
         HideWhenFaceDown: false,
         Hands: false,
-        ...typeData,
         XmlUI: '',
         LuaScript: '',
         LuaScriptState: '',
+        AttachedSnapPoints: snapPoints.map((Position) => ({ Position })),
         GUID: uuid().substring(0, 6),
     };
 };

@@ -1,10 +1,11 @@
 import React from 'react';
 import resources from 'data/rev9/items/resources';
+import Face from 'Face';
 import Icon from 'atoms/Icon';
 import Resource from '../Resource';
 
 const BuildingSite = () => (
-    <div className="rev9-building-site">
+    <Face name="building-site" className="rev9-building-site">
         <div className="rev9-building-site__top">
             <div className="rev9-building-site__goal-cards">
                 <Icon type="goal" context="rev9" />
@@ -98,7 +99,7 @@ const BuildingSite = () => (
                 <div className="rev9-building-site__claim" />
             </div>
         </div>
-    </div>
+    </Face>
 );
 
 export default BuildingSite;

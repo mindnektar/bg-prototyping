@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import SnapPoint from 'SnapPoint';
 import Icon from 'atoms/Icon';
 
 const ScoreTrack = (props) => {
     const renderItem = (index) => (
-        <div
+        <SnapPoint
             key={index}
             className={classNames(
                 'rev9-score-track__item',
@@ -15,7 +16,7 @@ const ScoreTrack = (props) => {
             <Icon type="vp" context="rev9" />
 
             {index}
-        </div>
+        </SnapPoint>
     );
 
     return (

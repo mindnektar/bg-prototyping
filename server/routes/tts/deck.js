@@ -1,9 +1,10 @@
 import ttsObject from './object';
 
-export default ({ texture, contents, cardRows, cardColumns, ...object }) => ({
+export default ({ texture, cardCount, cardRows, cardColumns, ...object }) => ({
     ...ttsObject(object),
+    Name: 'Deck',
     SidewaysCard: false,
-    DeckIDs: contents,
+    DeckIDs: Array(cardCount).fill(null).map((_, index) => index + 100),
     CustomDeck: {
         1: {
             FaceURL: texture,
