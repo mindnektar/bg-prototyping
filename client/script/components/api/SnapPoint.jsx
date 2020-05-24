@@ -10,8 +10,12 @@ const SnapPoint = ({ children, ...props }) => (
     </div>
 );
 
+SnapPoint.defaultProps = {
+    children: null,
+};
+
 SnapPoint.propTypes = {
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
 };
 
 export default SnapPoint;

@@ -1,25 +1,28 @@
 import React from 'react';
 import Face from 'Face';
+import SnapPoint from 'SnapPoint';
 import Icon from 'atoms/Icon';
 import Gold from '../Gold';
 import Resource from '../Resource';
+
+const resourceOrder = ['wood', 'stone', 'fabric', 'wheat'];
 
 const Market = () => (
     <Face name="market" className="rev9-market">
         <div className="rev9-market__top">
             <div className="rev9-market__building-cards">
-                <div className="rev9-market__building-card-stack">
+                <SnapPoint className="rev9-market__building-card-stack">
                     <Icon type="construction" context="rev9" />
-                </div>
-                <div className="rev9-market__building-card">
-                    <Icon type="construction" context="rev9" />
-                </div>
-                <div className="rev9-market__building-card">
-                    <Icon type="construction" context="rev9" />
-                </div>
-                <div className="rev9-market__building-card">
-                    <Icon type="construction" context="rev9" />
-                </div>
+                </SnapPoint>
+
+                {Array(3).fill(null).map((_, index) => (
+                    <SnapPoint
+                        className="rev9-market__building-card"
+                        key={index}
+                    >
+                        <Icon type="construction" context="rev9" />
+                    </SnapPoint>
+                ))}
             </div>
 
             <div className="rev9-market__card-prices">
@@ -43,44 +46,17 @@ const Market = () => (
                     </div>
 
                     <div className="rev9-market__wares">
-                        {Array(4).fill(null).map((__, index) => (
-                            <div key={index}>
-                                <Resource type="wood" level={levelIndex + 1} />
+                        {Array(16).fill(null).map((__, index) => (
+                            <SnapPoint key={index}>
+                                <Resource
+                                    type={resourceOrder[Math.floor(index / 4)]}
+                                    level={levelIndex + 1}
+                                />
 
                                 {4 - levelIndex - 1 > index && (
                                     <div className="rev9-market__fill" />
                                 )}
-                            </div>
-                        ))}
-
-                        {Array(4).fill(null).map((__, index) => (
-                            <div key={index}>
-                                <Resource type="stone" level={levelIndex + 1} />
-
-                                {4 - levelIndex - 1 > index && (
-                                    <div className="rev9-market__fill" />
-                                )}
-                            </div>
-                        ))}
-
-                        {Array(4).fill(null).map((__, index) => (
-                            <div key={index}>
-                                <Resource type="fabric" level={levelIndex + 1} />
-
-                                {4 - levelIndex - 1 > index && (
-                                    <div className="rev9-market__fill" />
-                                )}
-                            </div>
-                        ))}
-
-                        {Array(4).fill(null).map((__, index) => (
-                            <div key={index}>
-                                <Resource type="wheat" level={levelIndex + 1} />
-
-                                {4 - levelIndex - 1 > index && (
-                                    <div className="rev9-market__fill" />
-                                )}
-                            </div>
+                            </SnapPoint>
                         ))}
                     </div>
                 </div>

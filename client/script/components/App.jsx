@@ -4,7 +4,6 @@ import Content from './App/Content';
 
 const App = () => (
     <div className="container">
-        <div className="card-size-check" />
         <Sidebar />
         <Content />
     </div>

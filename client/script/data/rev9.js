@@ -139,7 +139,7 @@ export default {
                 group: 'Game board',
                 textureIndex: 0,
                 modelIndex: 0,
-                position: { x: 0, y: 0.05, z: 20 },
+                position: { x: 0, y: 0.05, z: 25 },
                 rotation: { y: 180 },
                 locked: true,
                 preciseCollision: true,
@@ -152,7 +152,7 @@ export default {
                 position: {
                     x: -5.4,
                     y: 0.2 + (index * 0.2),
-                    z: 32.6,
+                    z: 37.6,
                 },
                 rotation: { y: 180 },
             })),

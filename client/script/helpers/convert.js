@@ -5,18 +5,29 @@ import htmlToImage from 'html-to-image';
 import JSZip from 'jszip';
 import axios from 'axios';
 
+const createInvisibleElement = () => {
+    const element = document.createElement('div');
+
+    element.style = 'opacity: 0; pointer-events: none; position: fixed';
+    document.body.appendChild(element);
+
+    return element;
+};
+
 const calculateCardSprites = (groups) => (
     groups.filter(({ type }) => type === 'card').map((group) => {
-        const sizeCheck = document.querySelector('.card-size-check');
+        const element = createInvisibleElement();
 
         ReactDOM.render(
             React.createElement(group.items[0].component, group.items[0].props),
-            sizeCheck
+            element
         );
 
-        const { width, height } = sizeCheck.getBoundingClientRect();
+        const { width, height } = element.getBoundingClientRect();
         let rows = 1;
         let columns = 1;
+
+        document.body.removeChild(element);
 
         group.items.forEach((_, index) => {
             if (index + 1 > rows * columns) {
@@ -38,33 +49,36 @@ const calculateCardSprites = (groups) => (
 );
 
 const calculateSnapPoints = (groups) => (
-    groups.filter(({ type }) => type !== 'custom').map((group) => {
-        const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
-        const convertible = convertibles[0];
-        const result = { group: group.label, snapPoints: [] };
+    groups.filter(({ type, items }) => type !== 'card' && items[0].component).map((group) => {
+        const element = createInvisibleElement();
 
-        if (!convertible) {
-            return result;
-        }
+        ReactDOM.render(
+            React.createElement(group.items[0].component, group.items[0].props),
+            element
+        );
 
-        const convertibleRect = convertible.getBoundingClientRect();
-        const convertibleX = convertibleRect.left + (convertibleRect.width / 2);
-        const convertibleY = convertibleRect.top + (convertibleRect.height / 2);
-        const snapPoints = Array.from(convertible.querySelectorAll('[data-snap-point]'));
-
-        result.snapPoints = snapPoints.map((snapPoint) => {
+        const elementRect = element.getBoundingClientRect();
+        const elementX = elementRect.left + (elementRect.width / 2);
+        const elementY = elementRect.top + (elementRect.height / 2);
+        const snapPoints = Array.from(element.querySelectorAll('[data-snap-point]'));
+        const result = snapPoints.map((snapPoint) => {
             const snapPointRect = snapPoint.getBoundingClientRect();
             const snapPointX = snapPointRect.left + (snapPointRect.width / 2);
             const snapPointY = snapPointRect.top + (snapPointRect.height / 2);
 
             return {
-                x: (snapPointX - convertibleX) / 100,
+                x: (elementX - snapPointX) / 100,
                 y: 0,
-                z: (snapPointY - convertibleY) / 100,
+                z: (snapPointY - elementY) / 100,
             };
         });
 
-        return result;
+        document.body.removeChild(element);
+
+        return {
+            group: group.label,
+            snapPoints: result,
+        };
     })
 );
 
@@ -229,7 +243,7 @@ export default async ({ groups, tts, shouldUpdateTextures, setProgress, path }) 
 
     const formData = new FormData();
     const cardSprites = calculateCardSprites(groups);
-    const snapPoints = calculateSnapPoints(groups);
+    const snapPointGroups = calculateSnapPoints(groups);
 
     if (shouldUpdateTextures) {
         const allConvertibles = document.querySelectorAll('.convertible');
@@ -272,12 +286,11 @@ export default async ({ groups, tts, shouldUpdateTextures, setProgress, path }) 
             }
 
             if (object.type === 'custom') {
-                return {
-                    ...object,
-                    snapPoints: snapPoints.find((sprite) => (
-                        sprite.group === object.group
-                    )).snapPoints,
-                };
+                const { snapPoints } = snapPointGroups.find((sprite) => (
+                    sprite.group === object.group
+                )) || {};
+
+                return { ...object, snapPoints };
             }
 
             return object;
