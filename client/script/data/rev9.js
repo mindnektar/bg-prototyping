@@ -129,6 +129,7 @@ export default {
                 model: models.constructionProgressMarker,
             }, {
                 model: models.constructionCompletionMarker,
+                collider: models.constructionCompletionMarkerCollider,
             }],
         },
     ],
@@ -139,10 +140,10 @@ export default {
                 group: 'Game board',
                 textureIndex: 0,
                 modelIndex: 0,
+                selfCollider: true,
                 position: { x: 0, y: 0.05, z: 25 },
                 rotation: { y: 180 },
                 locked: true,
-                preciseCollision: true,
             },
             ...Array(4).fill(null).map((_, index) => ({
                 type: 'custom',
@@ -156,6 +157,21 @@ export default {
                 },
                 rotation: { y: 180 },
             })),
+            {
+                type: 'custom',
+                group: 'Pieces',
+                modelIndex: 8,
+                color: '#8e6d3f',
+                position: { x: -21.12, y: 0.45, z: 19.34 },
+            },
+            {
+                type: 'custom',
+                group: 'Pieces',
+                modelIndex: 9,
+                customCollider: true,
+                color: '#8e6d3f',
+                position: { x: -13.92, y: 0.15, z: 19.34 },
+            },
             {
                 type: 'bag',
                 position: { x: 0, z: -4 },
@@ -238,10 +254,10 @@ export default {
                 group: 'Player boards',
                 textureIndex: index,
                 modelIndex: 0,
+                selfCollider: true,
                 position: { x: (index * 24) - 36, y: 0.2, z: -27 },
                 rotation: { y: 180 },
                 locked: true,
-                preciseCollision: true,
             })),
             ...items.playerBoardCovers.map((_, index) => ({
                 type: 'custom',

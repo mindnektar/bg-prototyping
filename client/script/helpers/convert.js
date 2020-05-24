@@ -93,77 +93,98 @@ const drawImageWithRotation = (context, imageElem, x, y, width, height, degrees)
     context.translate(-x - (width / 2), -y - (height / 2));
 };
 
+const generateModels = (groups) => (
+    groups.filter(({ type }) => type !== 'card').reduce((result, group) => {
+        const models = group.model
+            ? [{
+                type: 'model',
+                content: group.model,
+                filename: 0,
+                folder: group.label,
+            }]
+            : group.items.map((item, index) => ({
+                type: 'model',
+                content: item.model,
+                filename: index,
+                folder: group.label,
+            }));
+        const colliders = group.collider
+            ? [{
+                type: 'model',
+                content: group.collider,
+                filename: '0.collider',
+                folder: group.label,
+            }]
+            : group.items.map((item, index) => (
+                item.collider
+                    ? {
+                        type: 'model',
+                        content: item.collider,
+                        filename: `${index}.collider`,
+                        folder: group.label,
+                    }
+                    : null
+            )).filter(Boolean);
+
+        return [...result, ...models, ...colliders];
+    }, [])
+);
+
 const generateCustomFiles = (groups, updateProgress) => (
     sequential((
         groups.filter(({ type }) => type !== 'card').map((group) => async () => {
             const convertibles = document.querySelectorAll(`.convertible[data-group="${group.label}"]`);
-            const models = group.model
-                ? [{
-                    type: 'model',
-                    content: group.model,
-                    filename: 0,
-                    folder: group.label,
-                }]
-                : group.items.map((item, index) => ({
-                    type: 'model',
-                    content: item.model,
-                    filename: index,
-                    folder: group.label,
-                }));
 
-            return [
-                ...await sequential((
-                    Array.from(convertibles).map((convertible, index) => async () => {
-                        const { textureSize, textureMap, label } = group;
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        const faces = Array.from(convertible.querySelectorAll('.face'));
-                        const images = await Promise.all((
-                            (faces.length > 0 ? faces : [convertible]).map(async (face) => {
-                                const image = new Image();
+            return sequential((
+                Array.from(convertibles).map((convertible, index) => async () => {
+                    const { textureSize, textureMap, label } = group;
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    const faces = Array.from(convertible.querySelectorAll('[data-face]'));
+                    const images = await Promise.all((
+                        (faces.length > 0 ? faces : [convertible]).map(async (face) => {
+                            const image = new Image();
 
-                                image.dataset.name = face.dataset.name || 'default';
-                                image.src = await htmlToImage.toSvgDataURL(face);
+                            image.dataset.name = face.dataset.face || 'default';
+                            image.src = await htmlToImage.toSvgDataURL(face);
 
-                                return new Promise((resolve) => {
-                                    image.onload = () => {
-                                        resolve(image);
-                                    };
-                                });
-                            })
-                        ));
+                            return new Promise((resolve) => {
+                                image.onload = () => {
+                                    resolve(image);
+                                };
+                            });
+                        })
+                    ));
 
-                        canvas.width = textureSize;
-                        canvas.height = textureSize;
-                        context.fillStyle = '#d4d4d4';
-                        context.fillRect(0, 0, textureSize, textureSize);
+                    canvas.width = textureSize;
+                    canvas.height = textureSize;
+                    context.fillStyle = '#d4d4d4';
+                    context.fillRect(0, 0, textureSize, textureSize);
 
-                        textureMap.forEach(([name, x1, y1, x2, y2, rotation]) => {
-                            drawImageWithRotation(
-                                context,
-                                images.find(({ dataset }) => dataset.name === name),
-                                x1 * textureSize,
-                                (1 - y1) * textureSize,
-                                (x2 - x1) * textureSize,
-                                (y1 - y2) * textureSize,
-                                rotation,
-                            );
-                        });
+                    textureMap.forEach(([name, x1, y1, x2, y2, rotation]) => {
+                        drawImageWithRotation(
+                            context,
+                            images.find(({ dataset }) => dataset.name === name),
+                            x1 * textureSize,
+                            (1 - y1) * textureSize,
+                            (x2 - x1) * textureSize,
+                            (y1 - y2) * textureSize,
+                            rotation,
+                        );
+                    });
 
-                        const file = {
-                            type: 'texture',
-                            dataUrl: canvas.toDataURL(),
-                            filename: index,
-                            folder: label,
-                        };
+                    const file = {
+                        type: 'texture',
+                        dataUrl: canvas.toDataURL(),
+                        filename: index,
+                        folder: label,
+                    };
 
-                        updateProgress();
+                    updateProgress();
 
-                        return file;
-                    })
-                )),
-                ...models,
-            ];
+                    return file;
+                })
+            ));
         })
     ))
 );
@@ -218,16 +239,16 @@ const generateCardFiles = (groups, cardSprites, updateProgress) => (
     ))
 );
 
-const generateZipFile = (customFiles, cardFiles) => {
+const generateZipFile = (models, customFiles, cardFiles) => {
     const zip = new JSZip();
 
+    models.forEach((file) => {
+        zip.folder(file.folder).file(`${file.filename}.obj`, file.content);
+    });
+
     customFiles.forEach((file) => {
-        if (file.type === 'texture') {
-            const [, image] = file.dataUrl.split('base64,');
-            zip.folder(file.folder).file(`${file.filename}.png`, image, { base64: true });
-        } else {
-            zip.folder(file.folder).file(`${file.filename}.obj`, file.content);
-        }
+        const [, image] = file.dataUrl.split('base64,');
+        zip.folder(file.folder).file(`${file.filename}.png`, image, { base64: true });
     });
 
     cardFiles.forEach((file) => {
@@ -251,17 +272,16 @@ export default async ({ groups, tts, shouldUpdateTextures, setProgress, path }) 
 
         setProgress({ image: { done, total: allConvertibles.length } });
 
+        const models = generateModels(groups);
         const customFiles = await generateCustomFiles(groups, () => {
             done += 1;
             setProgress({ image: { done, total: allConvertibles.length } });
         });
-
         const cardFiles = await generateCardFiles(groups, cardSprites, () => {
             done += 1;
             setProgress({ image: { done, total: allConvertibles.length } });
         });
-
-        const file = await generateZipFile(customFiles, cardFiles);
+        const file = await generateZipFile(models, customFiles, cardFiles);
 
         formData.append('file', file);
     } else {

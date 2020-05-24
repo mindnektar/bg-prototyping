@@ -44,7 +44,7 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
 
             if (file.dir) {
                 return ftp.mkdir(filePath).catch(() => Promise.resolve());
-            }
+            }console.log(filePath);
 
             const fileData = await file.async('nodebuffer');
 
@@ -60,17 +60,16 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
     }
 
     const now = new Date().getTime();
+    const makeUrl = (group, filename) => (
+        `http://denk.alfahosting.org${directory}${urlSafe(group)}/${filename}?${now}`
+    );
 
     const mapObjects = (object) => {
         if (object.type === 'custom') {
             return ttsCustom({
                 ...object,
                 type: 'Custom_Model',
-                mesh: `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.modelIndex || 0}.obj?${now}`,
-                texture: object.textureIndex !== undefined
-                    ? `http://denk.alfahosting.org${directory}${urlSafe(object.group)}/${object.textureIndex}.png?${now}`
-                    : null,
-            });
+            }, makeUrl);
         }
 
         if (object.type === 'deck') {
