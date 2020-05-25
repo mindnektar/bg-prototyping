@@ -44,7 +44,7 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
 
             if (file.dir) {
                 return ftp.mkdir(filePath).catch(() => Promise.resolve());
-            }console.log(filePath);
+            }
 
             const fileData = await file.async('nodebuffer');
 
@@ -92,6 +92,20 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
     const result = ttsFile({
         ...tts,
         objects: tts.objects.map(mapObjects).filter(Boolean),
+        players: Object.entries(tts.players).map(([color, position]) => ({
+            Color: color,
+            Transform: {
+                posX: position.x,
+                posY: position.y,
+                posZ: position.z,
+                rotX: 0.0,
+                rotY: 180.0,
+                rotZ: 0.0,
+                scaleX: 1,
+                scaleY: 1,
+                scaleZ: 1,
+            },
+        })),
     });
 
     res.send(result);

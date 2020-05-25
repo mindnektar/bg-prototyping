@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import TableObject from 'TableObject';
+import Player from 'Player';
 import DataContext from 'contexts/data';
 
 const Table = () => {
@@ -17,9 +18,7 @@ const Table = () => {
                         type="bag"
                         locked
                         infinite
-                        color={
-                            constants.resourceColors[Math.floor(resourceIndex / 3)]
-                        }
+                        color={constants.resourceColors[Math.floor(resourceIndex / 3)]}
                         contents={[{
                             group: 'Resources',
                             textureIndex: resourceIndex,
@@ -134,6 +133,8 @@ const Table = () => {
                             locked
                             zPosition={0.2}
                         />
+
+                        <Player color={['Yellow', 'Purple', 'Blue', 'Orange'][index]} />
                     </div>
                 ))}
 

@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export default ({ filename, objects }) => ({
+export default ({ filename, objects, players }) => ({
     SaveName: filename,
     GameMode: 'None',
     Gravity: 0.5,
@@ -67,62 +67,7 @@ export default ({ filename, objects }) => ({
         Enable: true,
         DisableUnused: true,
         Hiding: 0,
-        HandTransforms: [{
-            Color: 'Yellow',
-            Transform: {
-                posX: -36,
-                posY: 3.6634984,
-                posZ: -32.0,
-                rotX: 0.0,
-                rotY: 0.0,
-                rotZ: 0.0,
-                scaleX: 9.414028,
-                scaleY: 8.96114,
-                scaleZ: 5.465863,
-            },
-        },
-        {
-            Color: 'Purple',
-            Transform: {
-                posX: -12.0,
-                posY: 3.663497,
-                posZ: -32.0,
-                rotX: 0.0,
-                rotY: 0.0,
-                rotZ: 0.0,
-                scaleX: 9.414041,
-                scaleY: 8.96114,
-                scaleZ: 5.465866,
-            },
-        },
-        {
-            Color: 'Blue',
-            Transform: {
-                posX: 12.0,
-                posY: 3.66349554,
-                posZ: -32.0,
-                rotX: 0.0,
-                rotY: 0.0,
-                rotZ: 0.0,
-                scaleX: 9.41399,
-                scaleY: 8.96114,
-                scaleZ: 5.46584129,
-            },
-        },
-        {
-            Color: 'Orange',
-            Transform: {
-                posX: 36.0,
-                posY: 3.663496,
-                posZ: -32.0,
-                rotX: 0.0,
-                rotY: 0.0,
-                rotZ: 0.0,
-                scaleX: 9.414045,
-                scaleY: 8.96114,
-                scaleZ: 5.465868,
-            },
-        }],
+        HandTransforms: players,
     },
     Turns: {
         Enable: false,

@@ -279,11 +279,27 @@ const generateTableData = (groups, table, constants, cardSprites) => {
     );
 
     const objects = Array.from(element.querySelectorAll('[data-object]'));
+    const players = Array.from(element.querySelectorAll('[data-player]'));
     const snapPointGroups = calculateSnapPoints(groups, table, constants);
     const tableRect = element.getBoundingClientRect();
     const tableX = tableRect.left + (tableRect.width / 2);
     const tableY = tableRect.top + (tableRect.height / 2);
     const result = {
+        players: players.reduce((all, player) => {
+            const playerRect = player.getBoundingClientRect();
+            const playerX = playerRect.left + (playerRect.width / 2);
+            const playerY = playerRect.top + (playerRect.height / 2);
+            const position = {
+                x: (tableX - playerX) / 100,
+                y: 3.8,
+                z: (playerY - tableY) / 100,
+            };
+
+            return {
+                ...all,
+                [player.dataset.player]: position,
+            };
+        }, {}),
         objects: objects.map((object) => {
             const { zPosition, ...data } = JSON.parse(object.dataset.object);
             const objectRect = object.getBoundingClientRect();

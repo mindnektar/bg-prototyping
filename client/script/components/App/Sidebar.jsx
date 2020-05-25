@@ -24,7 +24,7 @@ const Sidebar = (props) => {
                 }, {
                     label: 'Table',
                     content: (
-                        <div>lala</div>
+                        <div />
                     ),
                 }]}
             />
