@@ -2,6 +2,7 @@ import React from 'react';
 import resources from 'data/rev9/items/resources';
 import Face from 'Face';
 import SnapPoint from 'SnapPoint';
+import TableObject from 'TableObject';
 import Icon from 'atoms/Icon';
 import Resource from '../Resource';
 
@@ -39,6 +40,25 @@ const BuildingSite = () => (
             {Array(21).fill(null).map((_, index) => (
                 <SnapPoint key={index} className="rev9-building-site__track-item">
                     {index}
+
+                    {index === 0 && (
+                        <TableObject
+                            group="Pieces"
+                            modelIndex={8}
+                            color="#8e6d3f"
+                            zPosition={0.45}
+                        />
+                    )}
+
+                    {index === 10 && (
+                        <TableObject
+                            group="Pieces"
+                            modelIndex={9}
+                            collider="custom"
+                            color="#8e6d3f"
+                            zPosition={0.15}
+                        />
+                    )}
                 </SnapPoint>
             ))}
         </div>

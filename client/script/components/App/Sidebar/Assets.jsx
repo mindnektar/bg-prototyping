@@ -22,7 +22,7 @@ const Assets = (props) => {
     const startConversion = async () => {
         const result = await convert({
             groups: data.groups,
-            tts: data.tts,
+            constants: data.constants,
             table: data.table,
             shouldUpdateTextures,
             setProgress,

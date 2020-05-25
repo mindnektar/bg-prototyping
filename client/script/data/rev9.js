@@ -3,6 +3,7 @@ import * as components from './rev9/components';
 import * as items from './rev9/items';
 import * as models from './rev9/models';
 /* eslint-enable import/no-unresolved */
+import constants from './rev9/constants';
 import Table from './rev9/Table';
 
 const resourceColors = ['#5a8236', '#898b90', '#a9d283', '#e8df6f'];
@@ -164,56 +165,56 @@ export default {
     ],
     tts: {
         objects: [
-            {
-                type: 'custom',
-                group: 'Game board',
-                textureIndex: 0,
-                modelIndex: 0,
-                selfCollider: true,
-                position: { x: 0, y: 0.05, z: 25 },
-                rotation: { y: 180 },
-                locked: true,
-            },
-            ...Array(4).fill(null).map((_, index) => ({
-                type: 'custom',
-                group: 'Pieces',
-                modelIndex: 6,
-                color: playerColors[index],
-                position: {
-                    x: -5.4,
-                    y: 0.2 + (index * 0.2),
-                    z: 37.6,
-                },
-                rotation: { y: 180 },
-            })),
-            {
-                type: 'custom',
-                group: 'Pieces',
-                modelIndex: 8,
-                color: '#8e6d3f',
-                position: { x: -21.12, y: 0.45, z: 19.34 },
-            },
-            {
-                type: 'custom',
-                group: 'Pieces',
-                modelIndex: 9,
-                customCollider: true,
-                color: '#8e6d3f',
-                position: { x: -13.92, y: 0.15, z: 19.34 },
-            },
-            {
-                type: 'bag',
-                position: { x: 0, z: -4 },
-                rotation: { y: 180 },
-                locked: true,
-                contents: items.tiles.map((_, index) => ({
-                    type: 'custom',
-                    group: 'Tiles',
-                    textureIndex: index,
-                    modelIndex: 0,
-                    gridSnapping: true,
-                })),
-            },
+            // {
+            //     type: 'custom',
+            //     group: 'Game board',
+            //     textureIndex: 0,
+            //     modelIndex: 0,
+            //     selfCollider: true,
+            //     position: { x: 0, y: 0.05, z: 25 },
+            //     rotation: { y: 180 },
+            //     locked: true,
+            // },
+            // ...Array(4).fill(null).map((_, index) => ({
+            //     type: 'custom',
+            //     group: 'Pieces',
+            //     modelIndex: 6,
+            //     color: playerColors[index],
+            //     position: {
+            //         x: -5.4,
+            //         y: 0.2 + (index * 0.2),
+            //         z: 37.6,
+            //     },
+            //     rotation: { y: 180 },
+            // })),
+            // {
+            //     type: 'custom',
+            //     group: 'Pieces',
+            //     modelIndex: 8,
+            //     color: '#8e6d3f',
+            //     position: { x: -21.12, y: 0.45, z: 19.34 },
+            // },
+            // {
+            //     type: 'custom',
+            //     group: 'Pieces',
+            //     modelIndex: 9,
+            //     customCollider: true,
+            //     color: '#8e6d3f',
+            //     position: { x: -13.92, y: 0.15, z: 19.34 },
+            // },
+            // {
+            //     type: 'bag',
+            //     position: { x: 0, z: -4 },
+            //     rotation: { y: 180 },
+            //     locked: true,
+            //     contents: items.tiles.map((_, index) => ({
+            //         type: 'custom',
+            //         group: 'Tiles',
+            //         textureIndex: index,
+            //         modelIndex: 0,
+            //         gridSnapping: true,
+            //     })),
+            // },
             ...items.resources.map((_, index) => ({
                 type: 'bag',
                 position: {
@@ -247,39 +248,39 @@ export default {
                     modelIndex: 0,
                 }],
             })),
-            {
-                type: 'bag',
-                position: {
-                    x: 12,
-                    z: 2,
-                },
-                rotation: { y: 180 },
-                locked: true,
-                infinite: true,
-                contents: [{
-                    type: 'custom',
-                    group: 'Pieces',
-                    modelIndex: 0,
-                    color: '#ffffff',
-                }],
-            },
-            {
-                type: 'bag',
-                position: {
-                    x: 12,
-                    z: 6,
-                },
-                rotation: { y: 180 },
-                locked: true,
-                infinite: true,
-                contents: [{
-                    type: 'custom',
-                    group: 'Pieces',
-                    modelIndex: 10,
-                    color: '#cccccc',
-                    glass: true,
-                }],
-            },
+            // {
+            //     type: 'bag',
+            //     position: {
+            //         x: 12,
+            //         z: 2,
+            //     },
+            //     rotation: { y: 180 },
+            //     locked: true,
+            //     infinite: true,
+            //     contents: [{
+            //         type: 'custom',
+            //         group: 'Pieces',
+            //         modelIndex: 0,
+            //         color: '#ffffff',
+            //     }],
+            // },
+            // {
+            //     type: 'bag',
+            //     position: {
+            //         x: 12,
+            //         z: 6,
+            //     },
+            //     rotation: { y: 180 },
+            //     locked: true,
+            //     infinite: true,
+            //     contents: [{
+            //         type: 'custom',
+            //         group: 'Pieces',
+            //         modelIndex: 10,
+            //         color: '#cccccc',
+            //         glass: true,
+            //     }],
+            // },
             {
                 type: 'deck',
                 group: 'Building cards',
@@ -287,24 +288,24 @@ export default {
                 rotation: { y: 180 },
                 scale: 2,
             },
-            {
-                type: 'custom',
-                group: 'Start tile',
-                textureIndex: 0,
-                modelIndex: 0,
-                position: { x: -4, z: -4 },
-                gridSnapping: true,
-            },
-            ...items.playerBoards.map((_, index) => ({
-                type: 'custom',
-                group: 'Player boards',
-                textureIndex: index,
-                modelIndex: 0,
-                selfCollider: true,
-                position: { x: (index * 24) - 36, y: 0.2, z: -27 },
-                rotation: { y: 180 },
-                locked: true,
-            })),
+            // {
+            //     type: 'custom',
+            //     group: 'Start tile',
+            //     textureIndex: 0,
+            //     modelIndex: 0,
+            //     position: { x: -4, z: -4 },
+            //     gridSnapping: true,
+            // },
+            // ...items.playerBoards.map((_, index) => ({
+            //     type: 'custom',
+            //     group: 'Player boards',
+            //     textureIndex: index,
+            //     modelIndex: 0,
+            //     selfCollider: true,
+            //     position: { x: (index * 24) - 36, y: 0.2, z: -27 },
+            //     rotation: { y: 180 },
+            //     locked: true,
+            // })),
             ...items.playerBoardCovers.map((_, index) => ({
                 type: 'custom',
                 group: 'Player board covers',
@@ -379,4 +380,5 @@ export default {
         ],
     },
     table: Table,
+    constants,
 };

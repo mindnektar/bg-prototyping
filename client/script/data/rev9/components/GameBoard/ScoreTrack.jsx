@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import DataContext from 'contexts/data';
 import SnapPoint from 'SnapPoint';
+import TableObject from 'TableObject';
 import Icon from 'atoms/Icon';
 
 const ScoreTrack = (props) => {
+    const { constants } = useContext(DataContext);
+
     const renderItem = (index) => (
         <SnapPoint
             key={index}
@@ -16,6 +20,18 @@ const ScoreTrack = (props) => {
             <Icon type="vp" context="rev9" />
 
             {index}
+
+            {index === 0 && (
+                Array(4).fill(null).map((_, playerIndex) => (
+                    <TableObject
+                        key={playerIndex}
+                        group="Pieces"
+                        modelIndex={6}
+                        color={constants.playerColors[playerIndex]}
+                        zPosition={0.2 + (playerIndex * 0.2)}
+                    />
+                ))
+            )}
         </SnapPoint>
     );
 

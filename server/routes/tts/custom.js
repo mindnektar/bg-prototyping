@@ -49,7 +49,7 @@ export default (
             DiffuseURL: textureUrl,
             NormalURL: '',
             ColliderURL: colliderUrl,
-            Convex: !colliderUrl,
+            Convex: colliderUrl ? !object.locked : true,
             MaterialIndex: material,
             TypeIndex: 0,
             CustomShader: shader,

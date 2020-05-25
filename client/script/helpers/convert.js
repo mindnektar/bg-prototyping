@@ -5,7 +5,6 @@ import htmlToImage from 'html-to-image';
 import JSZip from 'jszip';
 import axios from 'axios';
 import DataContext from 'contexts/data';
-import Table from 'components/App/Content/Table';
 
 const createInvisibleElement = () => {
     const element = document.createElement('div');
@@ -50,12 +49,17 @@ const calculateCardSprites = (groups) => (
     })
 );
 
-const calculateSnapPoints = (groups) => (
+const calculateSnapPoints = (groups, table, constants) => (
     groups.filter(({ type, items }) => type !== 'card' && items[0].component).map((group) => {
         const element = createInvisibleElement();
 
         ReactDOM.render(
-            React.createElement(group.items[0].component, group.items[0].props),
+            React.createElement(
+                DataContext.Provider, {
+                    value: { groups, table, constants },
+                },
+                React.createElement(group.items[0].component, group.items[0].props),
+            ),
             element
         );
 
@@ -261,23 +265,22 @@ const generateZipFile = (models, customFiles, cardFiles) => {
     return zip.generateAsync({ type: 'blob' });
 };
 
-const generateTableData = (groups, table) => {
+const generateTableData = (groups, table, constants) => {
     const element = createInvisibleElement();
 
     ReactDOM.render(
         React.createElement(
             DataContext.Provider, {
-                value: { groups, table },
+                value: { groups, table, constants },
             },
-            React.createElement(Table),
+            React.createElement(table),
         ),
         element,
     );
 
-    const tableElement = document.querySelector('[data-table]');
-    const objects = Array.from(document.querySelectorAll('[data-object]'));
-    const snapPointGroups = calculateSnapPoints(groups);
-    const tableRect = tableElement.getBoundingClientRect();
+    const objects = Array.from(element.querySelectorAll('[data-object]'));
+    const snapPointGroups = calculateSnapPoints(groups, table, constants);
+    const tableRect = element.getBoundingClientRect();
     const tableX = tableRect.left + (tableRect.width / 2);
     const tableY = tableRect.top + (tableRect.height / 2);
     const result = {
@@ -288,10 +291,10 @@ const generateTableData = (groups, table) => {
             const objectY = objectRect.top + (objectRect.height / 2);
             const position = {
                 x: (tableX - objectX) / 100,
-                y: zPosition || 0,
+                y: zPosition,
                 z: (objectY - tableY) / 100,
             };
-            let snapPoints = null;
+            let snapPoints = [];
 
             if (data.type === 'custom') {
                 snapPoints = (snapPointGroups.find((sprite) => (
@@ -308,7 +311,7 @@ const generateTableData = (groups, table) => {
     return result;
 };
 
-export default async ({ groups, table, shouldUpdateTextures, setProgress, path }) => {
+export default async ({ groups, table, constants, shouldUpdateTextures, setProgress, path }) => {
     setProgress({ image: { done: 0, total: 0 } });
 
     const formData = new FormData();
@@ -337,7 +340,7 @@ export default async ({ groups, table, shouldUpdateTextures, setProgress, path }
     }
 
     formData.append('path', path);
-    formData.append('tts', JSON.stringify(generateTableData(groups, table)));
+    formData.append('tts', JSON.stringify(generateTableData(groups, table, constants)));
 
     await new Promise((resolve) => window.setTimeout(resolve, 500));
 

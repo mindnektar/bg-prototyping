@@ -10,8 +10,8 @@ const App = (props) => {
     const project = data.find(({ path }) => path === props.location.pathname);
     const dataValue = project ? {
         groups: project.groups,
-        tts: project.tts,
         table: project.table,
+        constants: project.constants,
     } : null;
 
     return (

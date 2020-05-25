@@ -17,7 +17,7 @@ export default ({ type, position, rotation, scale, color, gridSnapping, locked, 
         }
     }
 
-    const rotationValues = { rotX: 0, rotY: 1, rotZ: 0 };
+    const rotationValues = { rotX: 0, rotY: 0, rotZ: 0 };
 
     if (rotation) {
         if (rotation.x) {
