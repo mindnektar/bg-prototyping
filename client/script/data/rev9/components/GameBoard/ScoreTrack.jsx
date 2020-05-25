@@ -23,13 +23,14 @@ const ScoreTrack = (props) => {
 
             {index === 0 && (
                 Array(4).fill(null).map((_, playerIndex) => (
-                    <TableObject
-                        key={playerIndex}
-                        group="Pieces"
-                        modelIndex={6}
-                        color={constants.playerColors[playerIndex]}
-                        zPosition={0.2 + (playerIndex * 0.2)}
-                    />
+                    <div key={playerIndex} className="rev9-score-track__marker">
+                        <TableObject
+                            group="Pieces"
+                            modelIndex={6}
+                            color={constants.playerColors[playerIndex]}
+                            zPosition={0.2 + (playerIndex * 0.2)}
+                        />
+                    </div>
                 ))
             )}
         </SnapPoint>

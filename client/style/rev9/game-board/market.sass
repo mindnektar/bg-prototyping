@@ -21,6 +21,7 @@
         height: 620px
         justify-content: center
         margin: 0 8px
+        position: relative
         width: 360px
 
         .ui-icon--construction
@@ -29,6 +30,11 @@
 
     &__building-card-stack
         border: 8px solid rgba(black, .3)
+
+    &__deck
+        left: -8px
+        position: absolute
+        top: -8px
 
     &__card-prices
         display: flex
@@ -73,3 +79,13 @@
         position: absolute
         transform: translate(-50%, -50%)
         width: 8px
+
+    &__resource
+        position: relative
+
+    &__resource-position
+        height: 100%
+        left: 0
+        position: absolute
+        top: 0
+        width: 100%

@@ -1,6 +1,7 @@
 import React from 'react';
 import Face from 'Face';
 import SnapPoint from 'SnapPoint';
+import TableObject from 'TableObject';
 import Icon from 'atoms/Icon';
 import Gold from '../Gold';
 import Resource from '../Resource';
@@ -13,6 +14,15 @@ const Market = () => (
             <div className="rev9-market__building-cards">
                 <SnapPoint className="rev9-market__building-card-stack">
                     <Icon type="construction" context="rev9" />
+
+                    <div className="rev9-market__deck">
+                        <TableObject
+                            type="deck"
+                            group="Building cards"
+                            scale={2}
+                            zPosition={0.15}
+                        />
+                    </div>
                 </SnapPoint>
 
                 {Array(3).fill(null).map((_, index) => (
@@ -47,14 +57,26 @@ const Market = () => (
 
                     <div className="rev9-market__wares">
                         {Array(16).fill(null).map((__, index) => (
-                            <SnapPoint key={index}>
+                            <SnapPoint key={index} className="rev9-market__resource">
                                 <Resource
                                     type={resourceOrder[Math.floor(index / 4)]}
                                     level={levelIndex + 1}
                                 />
 
-                                {4 - levelIndex - 1 > index && (
-                                    <div className="rev9-market__fill" />
+                                {4 - levelIndex - 1 > index % 4 && (
+                                    <>
+                                        <div className="rev9-market__fill" />
+
+                                        <div className="rev9-market__resource-position">
+                                            <TableObject
+                                                group="Resources"
+                                                textureIndex={
+                                                    (Math.floor(index / 4) * 3) + levelIndex
+                                                }
+                                                zPosition={0.1}
+                                            />
+                                        </div>
+                                    </>
                                 )}
                             </SnapPoint>
                         ))}

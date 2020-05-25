@@ -265,7 +265,7 @@ const generateZipFile = (models, customFiles, cardFiles) => {
     return zip.generateAsync({ type: 'blob' });
 };
 
-const generateTableData = (groups, table, constants) => {
+const generateTableData = (groups, table, constants, cardSprites) => {
     const element = createInvisibleElement();
 
     ReactDOM.render(
@@ -294,15 +294,34 @@ const generateTableData = (groups, table, constants) => {
                 y: zPosition,
                 z: (objectY - tableY) / 100,
             };
-            let snapPoints = [];
 
-            if (data.type === 'custom') {
-                snapPoints = (snapPointGroups.find((sprite) => (
-                    sprite.group === data.group
-                )) || {}).snapPoints;
+            if (data.type === 'deck') {
+                const { rows, columns, count } = cardSprites.find(({ group }) => (
+                    group === data.group
+                ));
+
+                return {
+                    ...data,
+                    position,
+                    cardRows: rows,
+                    cardColumns: columns,
+                    cardCount: count,
+                };
             }
 
-            return { ...data, position, snapPoints };
+            if (data.type === 'custom') {
+                const { snapPoints } = snapPointGroups.find(({ group }) => (
+                    group === data.group
+                )) || {};
+
+                return {
+                    ...data,
+                    position,
+                    snapPoints,
+                };
+            }
+
+            return { ...data, position };
         }),
     };
 
@@ -340,7 +359,7 @@ export default async ({ groups, table, constants, shouldUpdateTextures, setProgr
     }
 
     formData.append('path', path);
-    formData.append('tts', JSON.stringify(generateTableData(groups, table, constants)));
+    formData.append('tts', JSON.stringify(generateTableData(groups, table, constants, cardSprites)));
 
     await new Promise((resolve) => window.setTimeout(resolve, 500));
 

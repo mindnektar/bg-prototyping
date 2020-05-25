@@ -28,6 +28,10 @@ const TableObject = (ownProps) => {
             return 'BAG';
         }
 
+        if (ownProps.type === 'deck') {
+            return 'DECK';
+        }
+
         return 'OBJ';
     };
 
@@ -41,11 +45,14 @@ const TableObject = (ownProps) => {
                 }
             )}
             data-object={JSON.stringify(objectData)}
+            style={!component ? { backgroundColor: ownProps.color } : null}
         >
             {component ? (
                 React.createElement(component, props)
             ) : (
-                <div className="table-object__placeholder">{placeholder()}</div>
+                <div className="table-object__placeholder">
+                    {placeholder()}
+                </div>
             )}
         </div>
     );
@@ -64,6 +71,7 @@ TableObject.defaultProps = {
     infinite: undefined,
     contents: undefined,
     glass: undefined,
+    scale: undefined,
 };
 
 TableObject.propTypes = {
@@ -79,6 +87,7 @@ TableObject.propTypes = {
     infinite: PropTypes.bool,
     contents: PropTypes.array,
     glass: PropTypes.bool,
+    scale: PropTypes.number,
 };
 
 export default TableObject;
