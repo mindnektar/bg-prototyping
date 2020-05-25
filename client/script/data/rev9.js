@@ -3,6 +3,7 @@ import * as components from './rev9/components';
 import * as items from './rev9/items';
 import * as models from './rev9/models';
 /* eslint-enable import/no-unresolved */
+import Table from './rev9/Table';
 
 const resourceColors = ['#5a8236', '#898b90', '#a9d283', '#e8df6f'];
 const playerColors = ['#f3f197', '#cc9dcc', '#9a9aff', '#f1bd60'];
@@ -377,4 +378,5 @@ export default {
             })),
         ],
     },
+    table: Table,
 };

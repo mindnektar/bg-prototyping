@@ -4,6 +4,8 @@ import sequential from 'promise-sequential';
 import htmlToImage from 'html-to-image';
 import JSZip from 'jszip';
 import axios from 'axios';
+import DataContext from 'contexts/data';
+import Table from 'components/App/Content/Table';
 
 const createInvisibleElement = () => {
     const element = document.createElement('div');
@@ -259,12 +261,58 @@ const generateZipFile = (models, customFiles, cardFiles) => {
     return zip.generateAsync({ type: 'blob' });
 };
 
-export default async ({ groups, tts, shouldUpdateTextures, setProgress, path }) => {
+const generateTableData = (groups, table) => {
+    const element = createInvisibleElement();
+
+    ReactDOM.render(
+        React.createElement(
+            DataContext.Provider, {
+                value: { groups, table },
+            },
+            React.createElement(Table),
+        ),
+        element,
+    );
+
+    const tableElement = document.querySelector('[data-table]');
+    const objects = Array.from(document.querySelectorAll('[data-object]'));
+    const snapPointGroups = calculateSnapPoints(groups);
+    const tableRect = tableElement.getBoundingClientRect();
+    const tableX = tableRect.left + (tableRect.width / 2);
+    const tableY = tableRect.top + (tableRect.height / 2);
+    const result = {
+        objects: objects.map((object) => {
+            const { zPosition, ...data } = JSON.parse(object.dataset.object);
+            const objectRect = object.getBoundingClientRect();
+            const objectX = objectRect.left + (objectRect.width / 2);
+            const objectY = objectRect.top + (objectRect.height / 2);
+            const position = {
+                x: (tableX - objectX) / 100,
+                y: zPosition || 0,
+                z: (objectY - tableY) / 100,
+            };
+            let snapPoints = null;
+
+            if (data.type === 'custom') {
+                snapPoints = (snapPointGroups.find((sprite) => (
+                    sprite.group === data.group
+                )) || {}).snapPoints;
+            }
+
+            return { ...data, position, snapPoints };
+        }),
+    };
+
+    document.body.removeChild(element);
+
+    return result;
+};
+
+export default async ({ groups, table, shouldUpdateTextures, setProgress, path }) => {
     setProgress({ image: { done: 0, total: 0 } });
 
     const formData = new FormData();
     const cardSprites = calculateCardSprites(groups);
-    const snapPointGroups = calculateSnapPoints(groups);
 
     if (shouldUpdateTextures) {
         const allConvertibles = document.querySelectorAll('.convertible');
@@ -289,33 +337,7 @@ export default async ({ groups, tts, shouldUpdateTextures, setProgress, path }) 
     }
 
     formData.append('path', path);
-    formData.append('tts', JSON.stringify({
-        ...tts,
-        objects: tts.objects.map((object) => {
-            if (object.type === 'deck') {
-                const { rows, columns, count } = cardSprites.find((sprite) => (
-                    sprite.group === object.group
-                ));
-
-                return {
-                    ...object,
-                    cardRows: rows,
-                    cardColumns: columns,
-                    cardCount: count,
-                };
-            }
-
-            if (object.type === 'custom') {
-                const { snapPoints } = snapPointGroups.find((sprite) => (
-                    sprite.group === object.group
-                )) || {};
-
-                return { ...object, snapPoints };
-            }
-
-            return object;
-        }),
-    }));
+    formData.append('tts', JSON.stringify(generateTableData(groups, table)));
 
     await new Promise((resolve) => window.setTimeout(resolve, 500));
 

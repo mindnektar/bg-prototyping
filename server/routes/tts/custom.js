@@ -1,12 +1,12 @@
 import ttsObject from './object';
 
 export default (
-    { modelIndex, textureIndex, selfCollider, customCollider, glass, group, ...object },
+    { modelIndex, textureIndex, collider, glass, group, ...object },
     makeUrl
 ) => {
-    const mesh = makeUrl(group, `${modelIndex || 0}.obj`);
-    const texture = textureIndex !== undefined ? makeUrl(group, `${textureIndex}.png`) : '';
-    let collider = '';
+    const meshUrl = makeUrl(group, `${modelIndex || 0}.obj`);
+    const textureUrl = textureIndex !== undefined ? makeUrl(group, `${textureIndex}.png`) : '';
+    let colliderUrl = '';
     let material = 1;
     let shader = {
         SpecularColor: {
@@ -19,7 +19,7 @@ export default (
         FresnelStrength: 0.0,
     };
 
-    if (texture) {
+    if (textureUrl) {
         material = 3;
     } else if (glass) {
         material = 4;
@@ -35,21 +35,21 @@ export default (
         };
     }
 
-    if (selfCollider) {
-        collider = mesh;
-    } else if (customCollider) {
-        collider = makeUrl(group, `${modelIndex || 0}.collider.obj`);
+    if (collider === 'self') {
+        colliderUrl = meshUrl;
+    } else if (collider === 'custom') {
+        colliderUrl = makeUrl(group, `${modelIndex || 0}.collider.obj`);
     }
 
     return {
         ...ttsObject(object),
         name: 'Custom_Model',
         CustomMesh: {
-            MeshURL: mesh,
-            DiffuseURL: texture,
+            MeshURL: meshUrl,
+            DiffuseURL: textureUrl,
             NormalURL: '',
-            ColliderURL: collider,
-            Convex: !collider,
+            ColliderURL: colliderUrl,
+            Convex: !colliderUrl,
             MaterialIndex: material,
             TypeIndex: 0,
             CustomShader: shader,

@@ -1,50 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import download from 'downloadjs';
-import { useLocalStorage } from '@rehooks/local-storage';
-import data from 'data';
-import convert from 'helpers/convert';
-import Button from 'atoms/Button';
-import Checkbox from 'atoms/Checkbox';
-import List from './Sidebar/List';
-import ConversionProgress from './Sidebar/ConversionProgress';
+import DataContext from 'contexts/data';
+import TabContainer from 'molecules/TabContainer';
+import Assets from './Sidebar/Assets';
 
 const Sidebar = (props) => {
-    const [shouldUpdateTextures, setShouldUpdateTextures] = useLocalStorage('shouldUpdateTextures', true);
-    const [progress, setProgress] = useState(null);
-    const [conversionResult, setConversionResult] = useState(null);
+    const data = useContext(DataContext);
 
-    const toggleShouldUpdateTextures = () => {
-        setShouldUpdateTextures(!shouldUpdateTextures);
-    };
-
-    const startConversion = async () => {
-        const { groups, tts } = data.find(({ path }) => path === props.location.pathname);
-
-        const result = await convert({
-            groups,
-            tts,
-            shouldUpdateTextures,
-            setProgress,
-            path: props.location.pathname,
-        });
-
-        setConversionResult(result);
-    };
-
-    const finishConversion = () => {
-        download(conversionResult, 'TS_Save_1000.json', 'text/plain');
-        setProgress(null);
-    };
-
-    const closeConversion = () => {
-        setProgress(null);
-    };
-
-    const { groups } = data.find(({ path }) => path === props.location.pathname) || {};
-
-    if (!groups) {
+    if (!data) {
         return (
             <div className="sidebar" />
         );
@@ -52,23 +16,18 @@ const Sidebar = (props) => {
 
     return (
         <div className="sidebar">
-            <Button onClick={startConversion}>
-                Create TTS file
-            </Button>
-
-            <ConversionProgress
-                progress={progress}
-                onDownload={finishConversion}
-                onClose={closeConversion}
+            <TabContainer
+                name="sidebar"
+                tabs={[{
+                    label: 'Assets',
+                    content: <Assets path={props.location.pathname} />,
+                }, {
+                    label: 'Table',
+                    content: (
+                        <div>lala</div>
+                    ),
+                }]}
             />
-
-            <Checkbox
-                label="Update textures"
-                checked={shouldUpdateTextures}
-                onChange={toggleShouldUpdateTextures}
-            />
-
-            <List groups={groups} />
         </div>
     );
 };

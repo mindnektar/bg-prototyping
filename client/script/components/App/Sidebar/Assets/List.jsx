@@ -42,11 +42,11 @@ const List = (props) => {
     };
 
     return (
-        <div className="sidebar-list">
+        <div className="assets-list">
             {props.groups.map((group) => (
                 <div
                     key={group.label}
-                    className="sidebar-list__item"
+                    className="assets-list__item"
                     onClick={scrollToHandler(group.label)}
                 >
                     {group.label}
