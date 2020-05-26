@@ -1,7 +1,7 @@
 const { v4: uuid } = require('uuid');
 
 export default ({ type, position, rotation, scale, color, gridSnapping, locked, snapPoints = [] }) => {
-    const positionValues = { posX: 0, posY: 1, posZ: 0 };
+    const positionValues = { posX: 0, posY: 0, posZ: 0 };
 
     if (position) {
         if (position.x) {
@@ -9,7 +9,7 @@ export default ({ type, position, rotation, scale, color, gridSnapping, locked, 
         }
 
         if (position.y) {
-            positionValues.posY += position.y;
+            positionValues.posY = position.y;
         }
 
         if (position.z) {
@@ -36,8 +36,22 @@ export default ({ type, position, rotation, scale, color, gridSnapping, locked, 
     const scaleValues = { scaleX: 1.0, scaleY: 1.0, scaleZ: 1.0 };
 
     if (scale) {
-        scaleValues.scaleX *= scale;
-        scaleValues.scaleZ *= scale;
+        if (typeof scale === 'object') {
+            if (scale.x) {
+                scaleValues.scaleX = scale.x;
+            }
+
+            if (scale.y) {
+                scaleValues.scaleY = scale.y;
+            }
+
+            if (scale.z) {
+                scaleValues.scaleZ = scale.z;
+            }
+        } else {
+            scaleValues.scaleX *= scale;
+            scaleValues.scaleZ *= scale;
+        }
     }
 
     const colorDiffuse = { r: 1.0, g: 1.0, b: 1.0 };

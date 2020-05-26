@@ -32,6 +32,10 @@ const TableObject = (ownProps) => {
             return 'DECK';
         }
 
+        if (ownProps.type === 'die') {
+            return 'DIE';
+        }
+
         return 'OBJ';
     };
 
@@ -72,6 +76,7 @@ TableObject.defaultProps = {
     contents: undefined,
     glass: undefined,
     scale: undefined,
+    faces: undefined,
 };
 
 TableObject.propTypes = {
@@ -88,6 +93,7 @@ TableObject.propTypes = {
     contents: PropTypes.array,
     glass: PropTypes.bool,
     scale: PropTypes.number,
+    faces: PropTypes.number,
 };
 
 export default TableObject;

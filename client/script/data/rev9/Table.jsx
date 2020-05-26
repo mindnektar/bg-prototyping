@@ -134,7 +134,10 @@ const Table = () => {
                             zPosition={0.2}
                         />
 
-                        <Player color={['Yellow', 'Purple', 'Blue', 'Orange'][index]} />
+                        <Player
+                            color={['Yellow', 'Purple', 'Blue', 'Orange'][index]}
+                            rotation={180}
+                        />
                     </div>
                 ))}
 

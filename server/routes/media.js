@@ -91,15 +91,25 @@ const mediaUploadHandler = asyncHandler(async (req, res) => {
 
     const result = ttsFile({
         ...tts,
-        objects: tts.objects.map(mapObjects).filter(Boolean),
-        players: Object.entries(tts.players).map(([color, position]) => ({
+        objects: [
+            ttsCustom({
+                type: 'Custom_Model',
+                group: '__Table',
+                color: '#576937',
+                position: { x: 0, y: -1, z: 0 },
+                scale: tts.tableSize,
+                locked: true,
+            }, makeUrl),
+            ...tts.objects.map(mapObjects).filter(Boolean),
+        ],
+        players: Object.entries(tts.players).map(([color, data]) => ({
             Color: color,
             Transform: {
-                posX: position.x,
-                posY: position.y,
-                posZ: position.z,
+                posX: data.position.x,
+                posY: data.position.y,
+                posZ: data.position.z,
                 rotX: 0.0,
-                rotY: 180.0,
+                rotY: data.rotation,
                 rotZ: 0.0,
                 scaleX: 1,
                 scaleY: 1,

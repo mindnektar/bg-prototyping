@@ -285,8 +285,10 @@ const generateTableData = (groups, table, constants, cardSprites) => {
     const tableX = tableRect.left + (tableRect.width / 2);
     const tableY = tableRect.top + (tableRect.height / 2);
     const result = {
+        tableSize: { x: tableRect.width / 100, z: tableRect.height / 100 },
         players: players.reduce((all, player) => {
             const playerRect = player.getBoundingClientRect();
+            const data = JSON.parse(player.dataset.player);
             const playerX = playerRect.left + (playerRect.width / 2);
             const playerY = playerRect.top + (playerRect.height / 2);
             const position = {
@@ -297,7 +299,10 @@ const generateTableData = (groups, table, constants, cardSprites) => {
 
             return {
                 ...all,
-                [player.dataset.player]: position,
+                [data.color]: {
+                    position,
+                    rotation: data.rotation,
+                },
             };
         }, {}),
         objects: objects.map((object) => {
