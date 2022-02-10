@@ -62,7 +62,7 @@
     "eslint-plugin-react": "7.19.0",
     "html-webpack-plugin": "^4.3.0",
     "import-glob-loader": "1.1.0",
-    "node-sass": "4.14.0",
+    "node-sass": "7.0.0",
     "raw-loader": "^4.0.1",
     "sass-loader": "8.0.2",
     "style-loader": "1.2.1",
