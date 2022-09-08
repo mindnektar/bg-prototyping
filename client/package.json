@@ -31,7 +31,7 @@
     "classnames": "2.2.6",
     "downloadjs": "^1.4.7",
     "html-to-image": "^0.1.1",
-    "jszip": "^3.4.0",
+    "jszip": "^3.7.0",
     "object.entries": "1.1.1",
     "object.values": "1.1.1",
     "promise-sequential": "^1.1.1",
